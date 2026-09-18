@@ -31,7 +31,7 @@ test.describe("Admin Login Test Cases", () => {
     );
   });
 
-  test("LGN 03 : Should display error message for invalid password", async () => {
+  test("LGN 04 : Should display error message for invalid password", async () => {
     await adminLogin.login("kasun@example.com", "heshani@1234");
 
     //verify error msg
@@ -40,7 +40,7 @@ test.describe("Admin Login Test Cases", () => {
     );
   });
 
-  test("LGN 04 : should display error msg for invalid email format", async () => {
+  test("LGN 05 : should display error msg for invalid email format", async () => {
     await adminLogin.emailInput.fill("test");
 
     await adminLogin.passwordInput.click();
@@ -50,7 +50,7 @@ test.describe("Admin Login Test Cases", () => {
     );
   });
 
-  test("LGN 05 :email field should be required", async () => {
+  test("LGN 06 :email field should be required", async () => {
     await adminLogin.emailInput.fill(" ");
     await adminLogin.passwordInput.fill("kasun@1234");
     await adminLogin.passwordInput.click();
@@ -58,7 +58,7 @@ test.describe("Admin Login Test Cases", () => {
     await expect(adminLogin.errorMessage).toHaveText("Email is required.");
   });
 
-  test("LGN 06 :password field should be required", async () => {
+  test("LGN 07 :password field should be required", async () => {
     await adminLogin.passwordInput.fill("");
     await adminLogin.emailInput.fill("kasun@example.com");
     await adminLogin.emailInput.click();
@@ -66,7 +66,7 @@ test.describe("Admin Login Test Cases", () => {
     await expect(adminLogin.errorMessage).toHaveText("Password is Required");
   });
 
-  test("LGN 07 : should display error msg for invalid password format", async () => {
+  test("LGN 08 : should display error msg for invalid password format", async () => {
     await adminLogin.emailInput.fill("kasun@example.com");
     await adminLogin.passwordInput.fill("test");
     await adminLogin.emailInput.click();
@@ -77,11 +77,10 @@ test.describe("Admin Login Test Cases", () => {
     );
   });
 
-  test("LGN 08 :Should login successfully with valid credentials", async ({
+  test("LGN 09 :Should login successfully with valid credentials", async ({
     page,
   }) => {
     await adminLogin.login("kasun@example.com", "kasun@1234");
-    await adminLogin.clickContinue();
 
     await expect(page).toHaveURL(
       "https://asha-securities-web.innov8hrm.com/dashboard",
