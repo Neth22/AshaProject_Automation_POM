@@ -66,9 +66,7 @@ test.describe("Admin Login Test Cases", () => {
     await expect(adminLogin.errorMessage).toHaveText("Password is Required");
   });
 
-  test("LGN 07 : should display error msg for invalid password format", async ({
-    page,
-  }) => {
+  test("LGN 07 : should display error msg for invalid password format", async () => {
     await adminLogin.emailInput.fill("kasun@example.com");
     await adminLogin.passwordInput.fill("test");
     await adminLogin.emailInput.click();
@@ -76,6 +74,17 @@ test.describe("Admin Login Test Cases", () => {
     //verify error msg
     await expect(adminLogin.errorMessage).toHaveText(
       "Password must be longer than or equal to 8 characters",
+    );
+  });
+
+  test("LGN 08 :Should login successfully with valid credentials", async ({
+    page,
+  }) => {
+    await adminLogin.login("kasun@example.com", "kasun@1234");
+    await adminLogin.clickContinue();
+
+    await expect(page).toHaveURL(
+      "https://asha-securities-web.innov8hrm.com/dashboard",
     );
   });
 });
