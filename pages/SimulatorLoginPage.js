@@ -3,7 +3,7 @@ export class SimulatorLogin {
   constructor(page) {
     this.page = page;
 
-    this.simulatorLoginUrl = page.goto("https://simulator.innov8hrm.com/login");
+    this.simulatorLoginUrl = "https://asha-securities-web.innov8hrm.com/simulator/login";
 
     //locators
     this.emailInput = page.locator('[type="email"]');
@@ -52,7 +52,7 @@ export class SimulatorLogin {
     // Verify login page UI
     async verifyLoginPage() {
       await expect(this.page).toHaveTitle("ASHA Securities Limited");
-      await expect(this.page).toHaveURL(this.loginUrl);
+      await expect(this.page).toHaveURL(this.simulatorLoginUrl);
       await expect(this.logo).toBeVisible();
       await expect(this.emailInput).toBeVisible();
       await expect(this.emailInput).toBeEmpty();
