@@ -13,9 +13,7 @@ test.describe("Admin Login Test Cases", () => {
     await adminLogin.verifyLoginPage();
   });
 
-  test("LGN 02 : Should toggle password visibility when clicking eye icon", async ({
-    page,
-  }) => {
+  test("LGN 02 : Should toggle password visibility when clicking eye icon", async () => {
     await adminLogin.typePassword("test@1234");
 
     await expect(adminLogin.passwordInput).toHaveAttribute("type", "password");
@@ -25,5 +23,13 @@ test.describe("Admin Login Test Cases", () => {
     await adminLogin.hidePassword.click();
   });
 
-  
+  test("LGN 03 : Should display error message for invalid email", async () => {
+    await adminLogin.typeEmail("dilmi@example.com");
+    await adminLogin.typePassword("kasun@1234");
+    await adminLogin.clickContinue();
+    //verify error msg
+    await expect(adminLogin.errorMessage).toHaveText(
+      "Invalid username/email or password",
+    );
+  });
 });
