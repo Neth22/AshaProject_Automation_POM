@@ -57,4 +57,25 @@ test.describe("Admin Login Test Cases", () => {
 
     await expect(adminLogin.errorMessage).toHaveText("Email is required.");
   });
+
+  test("LGN 06 :password field should be required", async () => {
+    await adminLogin.passwordInput.fill("");
+    await adminLogin.emailInput.fill("kasun@example.com");
+    await adminLogin.emailInput.click();
+
+    await expect(adminLogin.errorMessage).toHaveText("Password is Required");
+  });
+
+  test("LGN 07 : should display error msg for invalid password format", async ({
+    page,
+  }) => {
+    await adminLogin.emailInput.fill("kasun@example.com");
+    await adminLogin.passwordInput.fill("test");
+    await adminLogin.emailInput.click();
+
+    //verify error msg
+    await expect(adminLogin.errorMessage).toHaveText(
+      "Password must be longer than or equal to 8 characters",
+    );
+  });
 });
