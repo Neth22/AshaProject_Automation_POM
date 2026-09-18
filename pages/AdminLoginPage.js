@@ -1,14 +1,12 @@
+import { expect } from "@playwright/test";
 export class AdminLoginPage {
   constructor(page) {
     this.page = page;
 
     //login url
-    this.loginUrl = page.goto(
-      "https://asha-securities-web.innov8hrm.com/login",
-    );
-
-    //locators
-    this.emailInput = page.locator('[type="email"]');
+    ((this.loginUrl = "https://asha-securities-web.innov8hrm.com/login"),
+      //locators
+      (this.emailInput = page.locator('[type="email"]')));
     this.passwordInput = page.locator('[type="password"]');
     this.continueBtn = page.getByRole("button", { name: "Continue" });
 
@@ -22,24 +20,24 @@ export class AdminLoginPage {
   }
 
   //navigate to login page
-  async goto (){
+  async goto() {
     await this.page.goto(this.loginUrl);
   }
 
-  async typeEmail (email) {
+  async typeEmail(email) {
     await this.emailInput.fill(email);
   }
 
-  async typePassword (password){
+  async typePassword(password) {
     await this.passwordInput.fill(password);
   }
 
-  async clickContinue(){
+  async clickContinue() {
     await this.continueBtn.click();
   }
 
   //Login with valid credentials
-  async login (email, password) {
+  async login(email, password) {
     await this.typeEmail(email);
     await this.typePassword(password);
     await this.clickContinue();
@@ -54,6 +52,6 @@ export class AdminLoginPage {
     await expect(this.emailInput).toBeEmpty();
     await expect(this.passwordInput).toBeVisible();
     await expect(this.passwordInput).toBeEmpty();
-    await expect(this.continueButton).toBeDisabled();
+    await expect(this.continueBtn).toBeDisabled();
   }
 }
