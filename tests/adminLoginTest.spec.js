@@ -49,4 +49,12 @@ test.describe("Admin Login Test Cases", () => {
       "Please enter a valid email address.",
     );
   });
+
+  test("LGN 05 :email field should be required", async () => {
+    await adminLogin.emailInput.fill(" ");
+    await adminLogin.passwordInput.fill("kasun@1234");
+    await adminLogin.passwordInput.click();
+
+    await expect(adminLogin.errorMessage).toHaveText("Email is required.");
+  });
 });
