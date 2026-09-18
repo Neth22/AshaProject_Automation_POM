@@ -22,4 +22,12 @@ test.describe("Simulator Login Test Cases", () => {
 
     await simulatorLogin.hidePassword.click();
   });
+
+  test("LGN 03 : Should display error message for invalid email", async () => {
+      await simulatorLogin.login("simulator@example.com", "nuhansa@1234");
+      //verify error msg
+      await expect(simulatorLogin.errorMessage).toHaveText(
+        "Invalid username/email or password",
+      );
+    });
 });
