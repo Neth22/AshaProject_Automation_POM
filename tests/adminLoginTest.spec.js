@@ -24,12 +24,29 @@ test.describe("Admin Login Test Cases", () => {
   });
 
   test("LGN 03 : Should display error message for invalid email", async () => {
-    await adminLogin.typeEmail("dilmi@example.com");
-    await adminLogin.typePassword("kasun@1234");
-    await adminLogin.clickContinue();
+    await adminLogin.login("nuhan@example.com", "kasun@1234");
     //verify error msg
     await expect(adminLogin.errorMessage).toHaveText(
       "Invalid username/email or password",
+    );
+  });
+
+  test("LGN 03 : Should display error message for invalid password", async () => {
+    await adminLogin.login("kasun@example.com", "heshani@1234");
+
+    //verify error msg
+    await expect(adminLogin.errorMessage).toHaveText(
+      "Invalid username/email or password",
+    );
+  });
+
+  test("LGN 04 : should display error msg for invalid email format", async () => {
+    await adminLogin.emailInput.fill("test");
+
+    await adminLogin.passwordInput.click();
+    //verify error msg
+    await expect(adminLogin.errorMessage).toHaveText(
+      "Please enter a valid email address.",
     );
   });
 });
