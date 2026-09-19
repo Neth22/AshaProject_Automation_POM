@@ -78,8 +78,8 @@ export class SimulatorRegisterPage {
     await expect(this.displayNameInput).toBeVisible();
     await expect(this.displayNameInput).toBeEmpty();
 
-    await expect(this.usernameInput).toBeVisible();
-    await expect(this.usernameInput).toBeEmpty();
+    await expect(this.userNameInput).toBeVisible();
+    await expect(this.userNameInput).toBeEmpty();
 
     await expect(this.emailInput).toBeVisible();
     await expect(this.emailInput).toBeEmpty();
@@ -87,11 +87,11 @@ export class SimulatorRegisterPage {
     await expect(this.passwordInput).toBeVisible();
     await expect(this.passwordInput).toHaveAttribute("type", "password");
 
-    await expect(this.continueButton).toBeVisible();
-    await expect(this.continueButton).toBeDisabled();
+    await expect(this.continueBtn).toBeVisible();
+    await expect(this.continueBtn).toBeDisabled();
 
-    await expect(this.signInLink).toBeVisible();
-    await expect(this.backButton).toBeVisible();
+    await expect(this.signInBtn).toBeVisible();
+    await expect(this.backBtn).toBeVisible();
   }
 
   async verifyRequiredFieldErrors() {
