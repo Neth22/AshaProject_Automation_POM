@@ -33,6 +33,7 @@ export class SimulatorVerifyEmailPage {
 
     // Error
     this.errorMessage = page.locator("div.text-red-400");
+    this.errorMessage2 = page.locator("p.text-red-400");
   }
 
   async goto(email) {

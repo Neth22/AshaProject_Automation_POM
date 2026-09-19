@@ -86,16 +86,6 @@ test.describe("Simulator Register Test Cases", () => {
   await simulatorVerifyEmail.verifyPageUI(email);
 });
 
-test("REG 06: verify verification code field is empty initially", async () => {
-  const email = "nseneviratne44@gmail.com";
-
-  await simulatorVerifyEmail.goto(email);
-
-  await expect(simulatorVerifyEmail.otpInput).toBeVisible();
-
-  await expect(simulatorVerifyEmail.otpInput).toBeEmpty();
-});
-
 test("REG 07: verify verification code field is empty initially", async () => {
   const email = "nseneviratne44@gmail.com";
 
@@ -106,7 +96,17 @@ test("REG 07: verify verification code field is empty initially", async () => {
   await expect(simulatorVerifyEmail.otpInput).toBeEmpty();
 });
 
-test("REG 08: verify error message is displayed for invalid verification code", async () => {
+test("REG 08: verify verification code field is empty initially", async () => {
+  const email = "nseneviratne44@gmail.com";
+
+  await simulatorVerifyEmail.goto(email);
+
+  await expect(simulatorVerifyEmail.otpInput).toBeVisible();
+
+  await expect(simulatorVerifyEmail.otpInput).toBeEmpty();
+});
+
+test("REG 09: verify error message is displayed for invalid verification code", async () => {
   const email = "nseneviratne44@gmail.com";
 
   await simulatorVerifyEmail.goto(email);
@@ -116,6 +116,22 @@ test("REG 08: verify error message is displayed for invalid verification code", 
   await expect(
     simulatorVerifyEmail.errorMessage,
   ).toHaveText("Invalid or expired verification code");
+});
+
+test("REG 10: verify invalid verification code format is not accepted", async () => {
+  const email = "nseneviratne44@gmail.com";
+
+  await simulatorVerifyEmail.goto(email);
+
+  await simulatorVerifyEmail.enterOtp("123");
+
+  await simulatorVerifyEmail.clickContinue();
+
+  await expect(
+    simulatorVerifyEmail.errorMessage2,
+  ).toHaveText(
+    "Verification code must be exactly 6 digits",
+  );
 });
 
 });
