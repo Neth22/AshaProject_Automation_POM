@@ -44,7 +44,15 @@ test.describe("Simulator Register Test Cases", () => {
     await simulatorRegister.verifyRequiredFieldErrors();
   });
 
-  test("SRGN 04: Should register successfully with valid details", async () => {
+  test("SRGN 04: Should back to intro page when click back button", async () => {
+    await simulatorRegister.backBtn.click();
+
+    await expect(simulatorRegister.page).toHaveURL(
+      "https://asha-securities-web.innov8hrm.com/simulator",
+    );
+  });
+
+  test("SRGN 05: Should register successfully with valid details", async () => {
     await simulatorRegister.userRegisteration(
       "Nuhansa De Silva",
       "nuhansa_trader",
