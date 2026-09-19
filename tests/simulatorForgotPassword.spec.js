@@ -73,4 +73,13 @@ test.describe("Simulator Forgot Password Test Cases", () => {
     await forgotPasswordOtp.verifyInvalidOtpError();
   });
 
+  test("FP 07: Should display error for incomplete OTP submission", async () => {
+    await forgotPasswordOtp.goto(email);
+
+    await forgotPasswordOtp.enterOtp("33");
+
+    await forgotPasswordOtp.clickVerifyCode();
+
+    await forgotPasswordOtp.verifyIncompleteOtpError();
+  });
 });
