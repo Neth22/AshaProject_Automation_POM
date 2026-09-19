@@ -27,7 +27,7 @@ test.describe("Simulator Register Test Cases", () => {
   });
 
   test("SRGN 03 :verify all fields are required and the continue btn is disabled when any field is empty", async () => {
-     await simulatorRegister.displayNameInput.fill("");
+    await simulatorRegister.displayNameInput.fill("");
     await simulatorRegister.userNameInput.click();
 
     await simulatorRegister.userNameInput.fill("");
@@ -42,5 +42,28 @@ test.describe("Simulator Register Test Cases", () => {
     await expect(simulatorRegister.continueBtn).toBeDisabled();
 
     await simulatorRegister.verifyRequiredFieldErrors();
+  });
+
+  test("SRGN 04: Should register successfully with valid details", async () => {
+    await simulatorRegister.userRegisteration(
+      "Nuhansa De Silva",
+      "nuhansa_trader",
+      "nseneviratne44@gmail.com",
+      "nuhansa@1234",
+    );
+
+    await expect(simulatorRegister.page).toHaveURL(
+      /\/simulator\/profile\/verifyOtp\?email=/,
+    );
+
+    await expect(
+      simulatorRegister.page.getByRole("heading", {
+        name: "VERIFY YOUR EMAIL",
+      }),
+    ).toBeVisible();
+
+    await expect(simulatorRegister.page.locator("#email")).toHaveValue(
+      "nseneviratne44@gmail.com",
+    );
   });
 });

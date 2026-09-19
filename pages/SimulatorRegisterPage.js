@@ -32,7 +32,7 @@ export class SimulatorRegisterPage {
   }
 
   async enterDisplayName(displayNameInput) {
-    await this.displayName.fill(displayNameInput);
+    await this.displayNameInput.fill(displayNameInput);
   }
 
   async enterUserName(userNameInput) {
