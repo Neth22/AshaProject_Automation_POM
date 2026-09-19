@@ -32,4 +32,15 @@ test.describe("Simulator Forgot Password Test Cases", () => {
 
     await forgotPassword.verifyEmailRequiredError();
   });
+
+  test("FP 03: Should display browser error message for invalid email format", async () => {
+    await forgotPassword.goto();
+
+    await forgotPassword.enterEmail("test");
+
+    await forgotPassword.clickSendOtp();
+
+    await forgotPassword.verifyInvalidEmailFormat();
+  });
+
 });
