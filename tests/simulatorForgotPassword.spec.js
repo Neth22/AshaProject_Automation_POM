@@ -22,5 +22,14 @@ test.describe("Simulator Forgot Password Test Cases", () => {
 
     await forgotPassword.verifyForgotPasswordPage();
   });
-  
+
+  test("FP 02: Should display error message for empty email field", async () => {
+    await forgotPassword.goto();
+
+    await forgotPassword.enterEmail("");
+
+    await forgotPassword.clickSendOtp();
+
+    await forgotPassword.verifyEmailRequiredError();
+  });
 });
