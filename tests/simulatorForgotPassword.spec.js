@@ -1,4 +1,4 @@
-import test from "@playwright/test";
+import test,{expect} from "@playwright/test";
 
 import { ForgotPasswordPage } from "../pages/ForgotPasswordPage.js";
 import { ForgotPasswordOtpPage } from "../pages/ForgotPasswordOtpPage.js";
@@ -43,4 +43,15 @@ test.describe("Simulator Forgot Password Test Cases", () => {
     await forgotPassword.verifyInvalidEmailFormat();
   });
 
+  test("FP 04: Should navigate back to login page when clicking Back to Sign In", async ({
+    page,
+  }) => {
+    await forgotPassword.goto();
+
+    await forgotPassword.clickBackToSignIn();
+
+    await expect(page).toHaveURL(
+      "https://asha-securities-web.innov8hrm.com/simulator/login",
+    );
+  });
 });
