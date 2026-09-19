@@ -23,9 +23,7 @@ export class SimulatorResendEmailPage {
       "Enter your email address to receive a verification code.",
     );
 
-    this.errorMessage = page.getByText(
-      "No pending registration found for this email",
-    );
+    this.errorMessage = page.locator("p.text-red-400");
   }
 
   async goto() {

@@ -165,4 +165,14 @@ test.describe("Simulator Register Test Cases", () => {
 
     await simulatorResendEmail.verifyPageUI();
   });
+
+  test("REG 14: verify error message for invalid resend email", async () => {
+    await simulatorResendEmail.goto();
+
+    await simulatorResendEmail.sendCode("nuhansa@example.com");
+
+    await expect(simulatorResendEmail.errorMessage).toHaveText(
+      "No pending registration found for this email",
+    );
+  });
 });
