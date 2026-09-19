@@ -1,14 +1,17 @@
 import test, { expect } from "@playwright/test";
 import { SimulatorRegisterPage } from "../pages/SimulatorRegisterPage.js";
 import { SimulatorVerifyEmailPage } from "../pages/SimulatorVerifyEmailPage.js";
+import { SimulatorResendEmailPage } from "../pages/SimulatorResendEmailPage.js";
 
 test.describe("Simulator Register Test Cases", () => {
   let simulatorRegister;
   let simulatorVerifyEmail;
+  let simulatorResendEmail;
 
   test.beforeEach(async ({ page }) => {
     simulatorRegister = new SimulatorRegisterPage(page);
-     simulatorVerifyEmail = new SimulatorVerifyEmailPage(page);
+    simulatorVerifyEmail = new SimulatorVerifyEmailPage(page);
+    simulatorResendEmail = new SimulatorResendEmailPage(page);
     await simulatorRegister.goto();
   });
 
@@ -79,83 +82,79 @@ test.describe("Simulator Register Test Cases", () => {
   });
 
   test("REG 06: verify email verification page UI elements", async () => {
-  const email = "nseneviratne44@gmail.com";
+    const email = "nseneviratne44@gmail.com";
 
-  await simulatorVerifyEmail.goto(email);
+    await simulatorVerifyEmail.goto(email);
 
-  await simulatorVerifyEmail.verifyPageUI(email);
-});
+    await simulatorVerifyEmail.verifyPageUI(email);
+  });
 
-test("REG 07: verify verification code field is empty initially", async () => {
-  const email = "nseneviratne44@gmail.com";
+  test("REG 07: verify verification code field is empty initially", async () => {
+    const email = "nseneviratne44@gmail.com";
 
-  await simulatorVerifyEmail.goto(email);
+    await simulatorVerifyEmail.goto(email);
 
-  await expect(simulatorVerifyEmail.otpInput).toBeVisible();
+    await expect(simulatorVerifyEmail.otpInput).toBeVisible();
 
-  await expect(simulatorVerifyEmail.otpInput).toBeEmpty();
-});
+    await expect(simulatorVerifyEmail.otpInput).toBeEmpty();
+  });
 
-test("REG 08: verify verification code field is empty initially", async () => {
-  const email = "nseneviratne44@gmail.com";
+  test("REG 08: verify verification code field is empty initially", async () => {
+    const email = "nseneviratne44@gmail.com";
 
-  await simulatorVerifyEmail.goto(email);
+    await simulatorVerifyEmail.goto(email);
 
-  await expect(simulatorVerifyEmail.otpInput).toBeVisible();
+    await expect(simulatorVerifyEmail.otpInput).toBeVisible();
 
-  await expect(simulatorVerifyEmail.otpInput).toBeEmpty();
-});
+    await expect(simulatorVerifyEmail.otpInput).toBeEmpty();
+  });
 
-test("REG 09: verify error message is displayed for invalid verification code", async () => {
-  const email = "nseneviratne44@gmail.com";
+  test("REG 09: verify error message is displayed for invalid verification code", async () => {
+    const email = "nseneviratne44@gmail.com";
 
-  await simulatorVerifyEmail.goto(email);
+    await simulatorVerifyEmail.goto(email);
 
-  await simulatorVerifyEmail.verifyOtp("111111");
+    await simulatorVerifyEmail.verifyOtp("111111");
 
-  await expect(
-    simulatorVerifyEmail.errorMessage,
-  ).toHaveText("Invalid or expired verification code");
-});
+    await expect(simulatorVerifyEmail.errorMessage).toHaveText(
+      "Invalid or expired verification code",
+    );
+  });
 
-test("REG 10: verify invalid verification code format is not accepted", async () => {
-  const email = "nseneviratne44@gmail.com";
+  test("REG 10: verify invalid verification code format is not accepted", async () => {
+    const email = "nseneviratne44@gmail.com";
 
-  await simulatorVerifyEmail.goto(email);
+    await simulatorVerifyEmail.goto(email);
 
-  await simulatorVerifyEmail.enterOtp("123");
+    await simulatorVerifyEmail.enterOtp("123");
 
-  await simulatorVerifyEmail.clickContinue();
+    await simulatorVerifyEmail.clickContinue();
 
-  await expect(
-    simulatorVerifyEmail.errorMessage2,
-  ).toHaveText(
-    "Verification code must be exactly 6 digits",
-  );
-});
+    await expect(simulatorVerifyEmail.errorMessage2).toHaveText(
+      "Verification code must be exactly 6 digits",
+    );
+  });
 
-test("REG 11: verify verification code accepts 6 digit OTP", async () => {
-  const email = "nseneviratne44@gmail.com";
+  test("REG 11: verify verification code accepts 6 digit OTP", async () => {
+    const email = "nseneviratne44@gmail.com";
 
-  await simulatorVerifyEmail.goto(email);
+    await simulatorVerifyEmail.goto(email);
 
-  await simulatorVerifyEmail.enterOtp("123456");
+    await simulatorVerifyEmail.enterOtp("123456");
 
-  await expect(
-    simulatorVerifyEmail.otpInput,
-  ).toHaveValue("123456");
-});
+    await expect(simulatorVerifyEmail.otpInput).toHaveValue("123456");
+  });
 
-test("REG 12: verify user can resend verification code", async () => {
-  const email = "nseneviratne44@gmail.com";
+  test("REG 12: verify user can resend verification code", async () => {
+    const email = "nseneviratne44@gmail.com";
 
-  await simulatorVerifyEmail.goto(email);
+    await simulatorVerifyEmail.goto(email);
 
-  await simulatorVerifyEmail.clickResendCode();
+    await simulatorVerifyEmail.clickResendCode();
 
-  await expect(simulatorVerifyEmail.page).toHaveURL(
-    "https://asha-securities-web.innov8hrm.com/simulator/profile/otpEmail",
-  );
-});
-
+    await expect(simulatorVerifyEmail.page).toHaveURL(
+      "https://asha-securities-web.innov8hrm.com/simulator/profile/otpEmail",
+    );
+  });
+  
 });
