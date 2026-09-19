@@ -81,6 +81,7 @@ test.describe("Simulator Register Test Cases", () => {
     );
   });
 
+  //------------------- simallator verify email page test cases ---------------------
   test("REG 06: verify email verification page UI elements", async () => {
     const email = "nseneviratne44@gmail.com";
 
@@ -156,5 +157,12 @@ test.describe("Simulator Register Test Cases", () => {
       "https://asha-securities-web.innov8hrm.com/simulator/profile/otpEmail",
     );
   });
-  
+
+  //----------------------- simallator resend email page test cases ---------------------
+
+  test("REG 13: verify resend email verification page UI elements", async () => {
+    await simulatorResendEmail.goto();
+
+    await simulatorResendEmail.verifyPageUI();
+  });
 });
