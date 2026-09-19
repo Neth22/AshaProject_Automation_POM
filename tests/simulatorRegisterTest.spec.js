@@ -106,4 +106,16 @@ test("REG 07: verify verification code field is empty initially", async () => {
   await expect(simulatorVerifyEmail.otpInput).toBeEmpty();
 });
 
+test("REG 08: verify error message is displayed for invalid verification code", async () => {
+  const email = "nseneviratne44@gmail.com";
+
+  await simulatorVerifyEmail.goto(email);
+
+  await simulatorVerifyEmail.verifyOtp("111111");
+
+  await expect(
+    simulatorVerifyEmail.errorMessage,
+  ).toHaveText("Invalid or expired verification code");
+});
+
 });
