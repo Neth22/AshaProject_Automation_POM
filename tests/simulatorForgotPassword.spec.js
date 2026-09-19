@@ -1,4 +1,4 @@
-import test,{expect} from "@playwright/test";
+import test, { expect } from "@playwright/test";
 
 import { ForgotPasswordPage } from "../pages/ForgotPasswordPage.js";
 import { ForgotPasswordOtpPage } from "../pages/ForgotPasswordOtpPage.js";
@@ -53,5 +53,13 @@ test.describe("Simulator Forgot Password Test Cases", () => {
     await expect(page).toHaveURL(
       "https://asha-securities-web.innov8hrm.com/simulator/login",
     );
+  });
+
+  test("FP 05: Should navigate to OTP verification screen with registered email", async () => {
+    await forgotPassword.goto();
+
+    await forgotPassword.sendOtp(email);
+
+    await forgotPassword.verifyOtpPage(email);
   });
 });
