@@ -146,4 +146,16 @@ test("REG 11: verify verification code accepts 6 digit OTP", async () => {
   ).toHaveValue("123456");
 });
 
+test("REG 12: verify user can resend verification code", async () => {
+  const email = "nseneviratne44@gmail.com";
+
+  await simulatorVerifyEmail.goto(email);
+
+  await simulatorVerifyEmail.clickResendCode();
+
+  await expect(simulatorVerifyEmail.page).toHaveURL(
+    "https://asha-securities-web.innov8hrm.com/simulator/profile/otpEmail",
+  );
+});
+
 });
