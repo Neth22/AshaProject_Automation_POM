@@ -62,4 +62,15 @@ test.describe("Simulator Forgot Password Test Cases", () => {
 
     await forgotPassword.verifyOtpPage(email);
   });
+
+  test("FP 06: Should display error for invalid OTP code", async () => {
+    await forgotPasswordOtp.goto(email);
+
+    await forgotPasswordOtp.enterOtp("333333");
+
+    await forgotPasswordOtp.clickVerifyCode();
+
+    await forgotPasswordOtp.verifyInvalidOtpError();
+  });
+
 });
