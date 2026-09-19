@@ -134,4 +134,16 @@ test("REG 10: verify invalid verification code format is not accepted", async ()
   );
 });
 
+test("REG 11: verify verification code accepts 6 digit OTP", async () => {
+  const email = "nseneviratne44@gmail.com";
+
+  await simulatorVerifyEmail.goto(email);
+
+  await simulatorVerifyEmail.enterOtp("123456");
+
+  await expect(
+    simulatorVerifyEmail.otpInput,
+  ).toHaveValue("123456");
+});
+
 });
