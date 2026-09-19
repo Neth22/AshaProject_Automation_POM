@@ -95,14 +95,14 @@ export class SimulatorRegisterPage {
   }
 
   async verifyRequiredFieldErrors() {
-    await expect(this.errorMessages.nth(0)).toHaveText(
+    await expect(this.errorMessage.nth(0)).toHaveText(
       "Display name is required.",
     );
 
-    await expect(this.errorMessages.nth(1)).toHaveText("Username is required.");
+    await expect(this.errorMessage.nth(1)).toHaveText("Username is required.");
 
-    await expect(this.errorMessages.nth(2)).toHaveText("Email is required.");
+    await expect(this.errorMessage.nth(2)).toHaveText("Email is required.");
 
-    await expect(this.errorMessages.nth(3)).toHaveText("Password is required.");
+    await expect(this.errorMessage.nth(3)).toHaveText("Password is required.");
   }
 }

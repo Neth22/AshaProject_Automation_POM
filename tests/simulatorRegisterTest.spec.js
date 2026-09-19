@@ -25,4 +25,22 @@ test.describe("Simulator Register Test Cases", () => {
 
     await simulatorRegister.eyeIconHide.click();
   });
+
+  test("SRGN 03 :verify all fields are required and the continue btn is disabled when any field is empty", async () => {
+     await simulatorRegister.displayNameInput.fill("");
+    await simulatorRegister.userNameInput.click();
+
+    await simulatorRegister.userNameInput.fill("");
+    await simulatorRegister.emailInput.click();
+
+    await simulatorRegister.emailInput.fill("");
+    await simulatorRegister.passwordInput.click();
+
+    await simulatorRegister.passwordInput.fill("");
+    await simulatorRegister.emailInput.click();
+
+    await expect(simulatorRegister.continueBtn).toBeDisabled();
+
+    await simulatorRegister.verifyRequiredFieldErrors();
+  });
 });
