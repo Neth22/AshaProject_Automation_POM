@@ -175,4 +175,29 @@ test.describe("Simulator Register Test Cases", () => {
       "No pending registration found for this email",
     );
   });
+
+  test("REG 15: verify resend code with valid email address", async () => {
+    const email = "nseneviratne44@gmail.com";
+
+    await simulatorResendEmail.goto();
+
+    await simulatorResendEmail.sendCode(email);
+
+    await expect(simulatorResendEmail.page).toHaveURL(
+      `https://asha-securities-web.innov8hrm.com/simulator/profile/verifyOtp?email=${encodeURIComponent(email)}`,
+    );
+  });
+
+  test("REG 15: verify navigate to simulator dashboard after successful verification", async () => {
+  const email = "nseneviratne44@gmail.com";
+
+  await simulatorVerifyEmail.goto(email);
+
+  await simulatorVerifyEmail.verifyOtp("709822");
+
+  await expect(simulatorVerifyEmail.page).toHaveURL(
+    "https://asha-securities-web.innov8hrm.com/simulator/simulatorDashboard",
+  );
+});
+
 });
