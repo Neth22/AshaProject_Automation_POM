@@ -1,11 +1,14 @@
 import test, { expect } from "@playwright/test";
 import { SimulatorRegisterPage } from "../pages/SimulatorRegisterPage.js";
+import { SimulatorVerifyEmailPage } from "../pages/SimulatorVerifyEmailPage.js";
 
 test.describe("Simulator Register Test Cases", () => {
   let simulatorRegister;
+  let simulatorVerifyEmail;
 
   test.beforeEach(async ({ page }) => {
     simulatorRegister = new SimulatorRegisterPage(page);
+     simulatorVerifyEmail = new SimulatorVerifyEmailPage(page);
     await simulatorRegister.goto();
   });
 
@@ -74,4 +77,14 @@ test.describe("Simulator Register Test Cases", () => {
       "nseneviratne44@gmail.com",
     );
   });
+
+  test("REG 06: verify email verification page UI elements", async () => {
+  const email = "nseneviratne44@gmail.com";
+
+  await simulatorVerifyEmail.goto(email);
+
+  await simulatorVerifyEmail.verifyPageUI(email);
+});
+
+
 });
