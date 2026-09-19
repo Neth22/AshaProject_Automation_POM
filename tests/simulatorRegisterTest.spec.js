@@ -86,5 +86,24 @@ test.describe("Simulator Register Test Cases", () => {
   await simulatorVerifyEmail.verifyPageUI(email);
 });
 
+test("REG 06: verify verification code field is empty initially", async () => {
+  const email = "nseneviratne44@gmail.com";
+
+  await simulatorVerifyEmail.goto(email);
+
+  await expect(simulatorVerifyEmail.otpInput).toBeVisible();
+
+  await expect(simulatorVerifyEmail.otpInput).toBeEmpty();
+});
+
+test("REG 07: verify verification code field is empty initially", async () => {
+  const email = "nseneviratne44@gmail.com";
+
+  await simulatorVerifyEmail.goto(email);
+
+  await expect(simulatorVerifyEmail.otpInput).toBeVisible();
+
+  await expect(simulatorVerifyEmail.otpInput).toBeEmpty();
+});
 
 });
