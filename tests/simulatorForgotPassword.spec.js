@@ -100,4 +100,12 @@ test.describe("Simulator Forgot Password Test Cases", () => {
 
     await resetPassword.verifyRequiredPasswordError();
   });
+
+   test("FP 10: Should display error when password does not meet requirements", async () => {
+    await resetPassword.goto(email, "830566");
+
+    await resetPassword.updatePassword("123", "123");
+
+    await resetPassword.verifyPasswordRequirementError();
+  });
 });
