@@ -127,4 +127,15 @@ test.describe("Simulator Forgot Password Test Cases", () => {
 
     await resetPassword.verifyPasswordMismatchError();
   });
+
+    test("FP 13: Should successfully reset password with valid criteria", async () => {
+    await resetPassword.goto(email, "673561");
+
+    await resetPassword.updatePassword(
+      "nuhansa@1234",
+      "nuhansa@1234",
+    );
+
+    await resetPassword.verifySuccessPage();
+  });
 });
