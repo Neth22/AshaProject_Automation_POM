@@ -116,4 +116,15 @@ test.describe("Simulator Forgot Password Test Cases", () => {
 
     await resetPassword.toggleNewPasswordVisibility();
   });
+
+    test("FP 12: Should display error when passwords do not match", async () => {
+    await resetPassword.goto(email, "830566");
+
+    await resetPassword.updatePassword(
+      "nuhansa@123456",
+      "nuhansa@1234",
+    );
+
+    await resetPassword.verifyPasswordMismatchError();
+  });
 });
