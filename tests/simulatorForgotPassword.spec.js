@@ -92,4 +92,12 @@ test.describe("Simulator Forgot Password Test Cases", () => {
 
     await forgotPasswordOtp.verifyResetPasswordPage();
   });
+
+    test("FP 09: Should display error when new password fields are empty", async () => {
+    await resetPassword.goto(email, "830566");
+
+    await resetPassword.clickUpdatePassword();
+
+    await resetPassword.verifyRequiredPasswordError();
+  });
 });
