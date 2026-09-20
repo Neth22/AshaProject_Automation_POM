@@ -108,4 +108,12 @@ test.describe("Simulator Forgot Password Test Cases", () => {
 
     await resetPassword.verifyPasswordRequirementError();
   });
+
+  test("FP 11: Should toggle password visibility when clicking show button", async () => {
+    await resetPassword.goto(email, "830566");
+
+    await resetPassword.enterNewPassword("12345678");
+
+    await resetPassword.toggleNewPasswordVisibility();
+  });
 });
