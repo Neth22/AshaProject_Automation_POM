@@ -82,4 +82,14 @@ test.describe("Simulator Forgot Password Test Cases", () => {
 
     await forgotPasswordOtp.verifyIncompleteOtpError();
   });
+
+   test("FP 08: Should accept valid OTP and navigate to reset password page", async () => {
+    await forgotPasswordOtp.goto(email);
+
+    await forgotPasswordOtp.enterOtp("673561");
+
+    await forgotPasswordOtp.clickVerifyCode();
+
+    await forgotPasswordOtp.verifyResetPasswordPage();
+  });
 });
