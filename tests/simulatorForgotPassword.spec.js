@@ -83,7 +83,7 @@ test.describe("Simulator Forgot Password Test Cases", () => {
     await forgotPasswordOtp.verifyIncompleteOtpError();
   });
 
-   test("FP 08: Should accept valid OTP and navigate to reset password page", async () => {
+  test("FP 08: Should accept valid OTP and navigate to reset password page", async () => {
     await forgotPasswordOtp.goto(email);
 
     await forgotPasswordOtp.enterOtp("673561");
@@ -93,7 +93,7 @@ test.describe("Simulator Forgot Password Test Cases", () => {
     await forgotPasswordOtp.verifyResetPasswordPage();
   });
 
-    test("FP 09: Should display error when new password fields are empty", async () => {
+  test("FP 09: Should display error when new password fields are empty", async () => {
     await resetPassword.goto(email, "830566");
 
     await resetPassword.clickUpdatePassword();
@@ -101,7 +101,7 @@ test.describe("Simulator Forgot Password Test Cases", () => {
     await resetPassword.verifyRequiredPasswordError();
   });
 
-   test("FP 10: Should display error when password does not meet requirements", async () => {
+  test("FP 10: Should display error when password does not meet requirements", async () => {
     await resetPassword.goto(email, "830566");
 
     await resetPassword.updatePassword("123", "123");
@@ -117,25 +117,33 @@ test.describe("Simulator Forgot Password Test Cases", () => {
     await resetPassword.toggleNewPasswordVisibility();
   });
 
-    test("FP 12: Should display error when passwords do not match", async () => {
+  test("FP 12: Should display error when passwords do not match", async () => {
     await resetPassword.goto(email, "830566");
 
-    await resetPassword.updatePassword(
-      "nuhansa@123456",
-      "nuhansa@1234",
-    );
+    await resetPassword.updatePassword("nuhansa@123456", "nuhansa@1234");
 
     await resetPassword.verifyPasswordMismatchError();
   });
 
-    test("FP 13: Should successfully reset password with valid criteria", async () => {
+  test("FP 13: Should successfully reset password with valid criteria", async () => {
     await resetPassword.goto(email, "673561");
 
-    await resetPassword.updatePassword(
-      "nuhansa@1234",
-      "nuhansa@1234",
-    );
+    await resetPassword.updatePassword("nuhansa@1234", "nuhansa@1234");
 
     await resetPassword.verifySuccessPage();
+  });
+
+  test("FP 14: Should navigate back to login page from success screen", async ({
+    page,
+  }) => {
+    await page.goto(
+      "https://asha-securities-web.innov8hrm.com/simulator/forgot-password/success",
+    );
+
+    await resetPassword.clickBackToSignIn();
+
+    await expect(page).toHaveURL(
+      "https://asha-securities-web.innov8hrm.com/simulator/login",
+    );
   });
 });
