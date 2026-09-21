@@ -36,4 +36,12 @@ test.describe("Simulator Dashboard Test Cases", () => {
         .getByText("SUNSHINE HOLDINGS PLC"),
     ).toBeVisible();
   });
+
+  test("DASH_04: Should display no results for invalid search", async () => {
+  await simulatorDashboard.search("INVALID999");
+
+  await expect(
+    simulatorDashboard.page.getByText("Invalid stock"),
+  ).toBeVisible();
+});
 });
