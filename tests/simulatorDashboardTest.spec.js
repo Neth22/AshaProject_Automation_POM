@@ -1,4 +1,4 @@
-import test from "@playwright/test";
+import test, { expect } from "@playwright/test";
 import { SimulatorDashboardPage } from "../pages/SimulatorDashboardPage.js";
 import { SimulatorLogin } from "../pages/SimulatorLoginPage.js";
 
@@ -14,7 +14,15 @@ test.describe("Simulator Dashboard Test Cases", () => {
     await simulatorDashboard.verifyDashboardUrl();
   });
 
-  test("SDGN 01: Should display all initial UI elements correctly", async () => {
+  test("DASH 01: Should display all initial UI elements correctly", async () => {
     await simulatorDashboard.verifyDashboard();
+  });
+
+  test("DASH_02: Should search for a valid security", async () => {
+    await simulatorDashboard.search("CIC.N0000");
+
+    await expect(
+      simulatorDashboard.page.locator("table").getByText("CIC.N0000"),
+    ).toBeVisible();
   });
 });
