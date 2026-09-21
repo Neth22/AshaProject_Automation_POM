@@ -37,7 +37,15 @@ test.describe("Simulator Dashboard Test Cases", () => {
     ).toBeVisible();
   });
 
-  test("DASH_04: Should display no results for invalid search", async () => {
+  test("DASH_04: Search using part of a company name", async () => {
+
+    await simulatorDashboard.search("Df");
+
+    await expect(simulatorDashboard.page.locator("table").getByText("DFCC BANK PLC")).toBeVisible();
+    
+  });
+
+  test("DASH_05: Should display no results for invalid search", async () => {
   await simulatorDashboard.search("INVALID999");
 
   await expect(
