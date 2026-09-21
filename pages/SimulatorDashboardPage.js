@@ -34,11 +34,25 @@ export class SimulatorDashboardPage {
 
     //market data table
     this.marketRows = page.locator("tbody tr");
+
+    //orders menu locators
+
+    this.marketDepthMenu = page.getByText("Market Depth", {
+      exact: true,
+    });
+
+    this.buyMenu = page.getByText("Buy", {
+      exact: true,
+    });
+
+    this.sellMenu = page.getByText("Sell", {
+      exact: true,
+    });
   }
 
   async verifyDashboardUrl() {
-  await expect(this.page).toHaveURL(this.dashboardUrl);
-}
+    await expect(this.page).toHaveURL(this.dashboardUrl);
+  }
   async verifyDashboard() {
     await expect(this.openCseAccountBtn).toBeVisible();
     await expect(this.leaderboardBtn).toBeVisible();
@@ -77,5 +91,20 @@ export class SimulatorDashboardPage {
 
   async clickOpenCseAccount() {
     await this.openCseAccountBtn.click();
+  }
+
+  async clickMarketDepth() {
+    await this.ordersBtn.click();
+    await this.marketDepthMenu.click();
+  }
+
+  async clickBuy() {
+    await this.ordersBtn.click();
+    await this.buyMenu.click();
+  }
+
+  async clickSell() {
+    await this.ordersBtn.click();
+    await this.sellMenu.click();
   }
 }
