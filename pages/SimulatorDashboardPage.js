@@ -101,4 +101,15 @@ export class SimulatorDashboardPage {
     await this.ordersBtn.click();
     await this.sellMenu.click();
   }
+
+  // select security and order menu (right click)
+  async selectSecurity(security) {
+    await this.page.getByText(security, { exact: true }).click();
+  }
+
+  async rightClickSecurity(security) {
+    await this.page.getByText(security, { exact: true }).click({
+      button: "right",
+    });
+  }
 }
