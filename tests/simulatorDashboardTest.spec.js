@@ -38,18 +38,26 @@ test.describe("Simulator Dashboard Test Cases", () => {
   });
 
   test("DASH_04: Search using part of a company name", async () => {
-
     await simulatorDashboard.search("Df");
 
-    await expect(simulatorDashboard.page.locator("table").getByText("DFCC BANK PLC")).toBeVisible();
-    
+    await expect(
+      simulatorDashboard.page.locator("table").getByText("DFCC BANK PLC"),
+    ).toBeVisible();
   });
 
   test("DASH_05: Should display no results for invalid search", async () => {
-  await simulatorDashboard.search("INVALID999");
+    await simulatorDashboard.search("INVALID999");
 
-  await expect(
-    simulatorDashboard.page.getByText("Invalid stock"),
-  ).toBeVisible();
-});
+    await expect(
+      simulatorDashboard.page.getByText("Invalid stock"),
+    ).toBeVisible();
+  });
+
+  test("DASH_06:Should display all market data after clearing search", async () => {
+    await simulatorDashboard.search("CIC.N0000");
+    await simulatorDashboard.clearSearch();
+    await expect(
+      simulatorDashboard.page.locator("table").getByText("CIC.N0000", { exact: true }),
+    ).toBeVisible();
+  });
 });
