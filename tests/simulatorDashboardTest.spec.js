@@ -99,4 +99,10 @@ test("DASH_11: Should navigate to Portfolio", async () => {
   await expect(simulatorDashboard.page).toHaveURL('https://asha-securities-web.innov8hrm.com/simulator/clientProfile');
 });
 
+test("DASH_12: Should navigate to Leaderboard", async () => {
+  await simulatorDashboard.clickLeaderboard();
+
+  await expect(simulatorDashboard.page).toHaveURL('https://asha-securities-web.innov8hrm.com/simulator/leaderboard');
+});
+
 });
