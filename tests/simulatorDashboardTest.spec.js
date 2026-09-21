@@ -61,12 +61,22 @@ test.describe("Simulator Dashboard Test Cases", () => {
     ).toBeVisible();
   });
 
-  test("DASH_06: Should display Orders menu", async () => {
+  test("DASH_07: Should display Orders menu", async () => {
   await simulatorDashboard.clickOrders();
 
   await expect(simulatorDashboard.marketDepthMenu).toBeVisible();
   await expect(simulatorDashboard.buyMenu).toBeVisible();
   await expect(simulatorDashboard.sellMenu).toBeVisible();
 });
+
+test("DASH_08: Should open Buy order modal", async () => {
+  await simulatorDashboard.clickBuy();
+
+  await expect(
+    simulatorDashboard.page.getByText(/BUY/i).first(),
+  ).toBeVisible();
+});
+
+
 
 });
