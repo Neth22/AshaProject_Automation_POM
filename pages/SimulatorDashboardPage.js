@@ -1,0 +1,81 @@
+import { expect } from "@playwright/test";
+
+export class SimulatorDashboardPage {
+  constructor(page) {
+    this.page = page;
+
+    //simulator dashboard url
+    this.dashboardUrl =
+      "https://asha-securities-web.innov8hrm.com/simulator/simulatorDashboard";
+
+    //Header btns
+    this.ordersBtn = page.getByText("Orders", { exact: true });
+
+    this.clientBtn = page.getByText("Client", { exact: true });
+
+    this.openCseAccountBtn = page.getByText("Open CSE Account", {
+      exact: true,
+    });
+
+    this.leaderboardBtn = page.getByRole("button", {
+      name: "Leaderboard",
+    });
+
+    this.userGuideBtn = page.getByRole("button", {
+      name: "User Guide",
+    });
+
+    this.portfolioBtn = page.getByRole("button", {
+      name: "PORTFOLIO",
+    });
+
+    //Search bar
+    this.searchInput = page.getByPlaceholder("Search here....");
+
+    //market data table
+    this.marketRows = page.locator("tbody tr");
+  }
+
+  async verifyDashboardUrl() {
+  await expect(this.page).toHaveURL(this.dashboardUrl);
+}
+  async verifyDashboard() {
+    await expect(this.openCseAccountBtn).toBeVisible();
+    await expect(this.leaderboardBtn).toBeVisible();
+    await expect(this.userGuideBtn).toBeVisible();
+    await expect(this.portfolioBtn).toBeVisible();
+    await expect(this.searchInput).toBeVisible();
+  }
+
+  async search(searchText) {
+    await this.searchInput.fill(searchText);
+  }
+
+  async clearSearch() {
+    await this.searchInput.fill("");
+  }
+
+  async clickOrders() {
+    await this.ordersBtn.click();
+  }
+
+  async clickClient() {
+    await this.clientBtn.click();
+  }
+
+  async clickPortfolio() {
+    await this.portfolioBtn.click();
+  }
+
+  async clickLeaderboard() {
+    await this.leaderboardBtn.click();
+  }
+
+  async clickUserGuide() {
+    await this.userGuideBtn.click();
+  }
+
+  async clickOpenCseAccount() {
+    await this.openCseAccountBtn.click();
+  }
+}
