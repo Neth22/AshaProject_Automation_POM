@@ -108,8 +108,9 @@ export class SimulatorDashboardPage {
   }
 
   async rightClickSecurity(security) {
-    await this.page.getByText(security, { exact: true }).click({
-      button: "right",
-    });
+    await this.page
+      .getByRole("table")
+      .getByText(security, { exact: true })
+      .click({ button: "right" });
   }
 }
