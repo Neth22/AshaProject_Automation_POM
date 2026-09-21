@@ -73,10 +73,16 @@ test("DASH_08: Should open Buy order modal", async () => {
   await simulatorDashboard.clickBuy();
 
   await expect(
-    simulatorDashboard.page.getByText(/BUY/i).first(),
+    simul.page.getByText(/BUY/i).first(),
   ).toBeVisible();
 });
 
+test("DASH_09: Should open Market Depth order modal", async () => {
+  await simulatorDashboard.clickMarketDepth();
 
+  await expect(
+    simulatorDashboard.page.getByText(/MARKET DEPTH/i).first(),
+  ).toBeVisible();
+});
 
 });
