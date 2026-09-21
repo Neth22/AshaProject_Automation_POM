@@ -93,5 +93,10 @@ test("DASH_10: Should open Sell order modal", async () => {
   ).toBeVisible();
 });
 
+test("DASH_11: Should navigate to Portfolio", async () => {
+  await simulatorDashboard.clickPortfolio();
+
+  await expect(simulatorDashboard.page).toHaveURL('https://asha-securities-web.innov8hrm.com/simulator/clientProfile');
+});
 
 });
