@@ -35,19 +35,13 @@ export class SimulatorDashboardPage {
     //market data table
     this.marketRows = page.locator("tbody tr");
 
-    //orders menu locators
+    //orders menu
 
-    this.marketDepthMenu = page.getByText("Market Depth", {
-      exact: true,
-    });
+    this.marketDepthMenu = page.getByRole("button", { name: "Market Depth" });
 
-    this.buyMenu = page.getByText("Buy", {
-      exact: true,
-    });
+    this.buyMenu = page.getByRole("button", { name: "Buy" });
 
-    this.sellMenu = page.getByText("Sell", {
-      exact: true,
-    });
+    this.sellMenu = page.getByRole("button", { name: "Sell" });
   }
 
   async verifyDashboardUrl() {
