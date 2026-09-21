@@ -57,58 +57,81 @@ test.describe("Simulator Dashboard Test Cases", () => {
     await simulatorDashboard.search("CIC.N0000");
     await simulatorDashboard.clearSearch();
     await expect(
-      simulatorDashboard.page.locator("table").getByText("CIC.N0000", { exact: true }),
+      simulatorDashboard.page
+        .locator("table")
+        .getByText("CIC.N0000", { exact: true }),
     ).toBeVisible();
   });
 
   test("DASH_07: Should display Orders menu", async () => {
-  await simulatorDashboard.clickOrders();
+    await simulatorDashboard.clickOrders();
 
-  await expect(simulatorDashboard.marketDepthMenu).toBeVisible();
-  await expect(simulatorDashboard.buyMenu).toBeVisible();
-  await expect(simulatorDashboard.sellMenu).toBeVisible();
-});
+    await expect(simulatorDashboard.marketDepthMenu).toBeVisible();
+    await expect(simulatorDashboard.buyMenu).toBeVisible();
+    await expect(simulatorDashboard.sellMenu).toBeVisible();
+  });
 
-test("DASH_08: Should open Buy order modal", async () => {
-  await simulatorDashboard.clickBuy();
+  test("DASH_08: Should open Buy order modal", async () => {
+    await simulatorDashboard.clickBuy();
 
-  await expect(
-    simul.page.getByText(/BUY/i).first(),
-  ).toBeVisible();
-});
+    await expect(simul.page.getByText(/BUY/i).first()).toBeVisible();
+  });
 
-test("DASH_09: Should open Market Depth order modal", async () => {
-  await simulatorDashboard.clickMarketDepth();
+  test("DASH_09: Should open Market Depth order modal", async () => {
+    await simulatorDashboard.clickMarketDepth();
 
-  await expect(
-    simulatorDashboard.page.getByText(/MARKET DEPTH/i).first(),
-  ).toBeVisible();
-});
+    await expect(
+      simulatorDashboard.page.getByText(/MARKET DEPTH/i).first(),
+    ).toBeVisible();
+  });
 
-test("DASH_10: Should open Sell order modal", async () => {
-  await simulatorDashboard.clickSell();
+  test("DASH_10: Should open Sell order modal", async () => {
+    await simulatorDashboard.clickSell();
 
-  await expect(
-    simulatorDashboard.page.getByText(/SELL/i).first(),
-  ).toBeVisible();
-});
+    await expect(
+      simulatorDashboard.page.getByText(/SELL/i).first(),
+    ).toBeVisible();
+  });
 
-test("DASH_11: Should navigate to Portfolio", async () => {
-  await simulatorDashboard.clickPortfolio();
+  test("DASH_11: Should navigate to Portfolio", async () => {
+    await simulatorDashboard.clickPortfolio();
 
-  await expect(simulatorDashboard.page).toHaveURL('https://asha-securities-web.innov8hrm.com/simulator/clientProfile');
-});
+    await expect(simulatorDashboard.page).toHaveURL(
+      "https://asha-securities-web.innov8hrm.com/simulator/clientProfile",
+    );
+  });
 
-test("DASH_12: Should navigate to Leaderboard", async () => {
-  await simulatorDashboard.clickLeaderboard();
+  test("DASH_12: Should navigate to Leaderboard", async () => {
+    await simulatorDashboard.clickLeaderboard();
 
-  await expect(simulatorDashboard.page).toHaveURL('https://asha-securities-web.innov8hrm.com/simulator/leaderboard');
-});
+    await expect(simulatorDashboard.page).toHaveURL(
+      "https://asha-securities-web.innov8hrm.com/simulator/leaderboard",
+    );
+  });
 
-test("DASH_11: Should open User Guide", async () => {
-  await simulatorDashboard.clickUserGuide();
+  test("DASH_13: Should open User Guide", async () => {
+    await simulatorDashboard.clickUserGuide();
+  });
 
-  
-});
+  test("DASH_14: Should open context menu for selected security", async () => {
+    await simulatorDashboard.rightClickSecurity("ACL.N0000");
 
+    await expect(
+      simulatorDashboard.page.getByRole("button", { name: "Buy", exact: true }),
+    ).toBeVisible();
+
+    await expect(
+      simulatorDashboard.page.getByRole("button", {
+        name: "Sell",
+        exact: true,
+      }),
+    ).toBeVisible();
+
+    await expect(
+      simulatorDashboard.page.getByRole("button", {
+        name: "Market Depth",
+        exact: true,
+      }),
+    ).toBeVisible();
+  });
 });
