@@ -85,4 +85,13 @@ test("DASH_09: Should open Market Depth order modal", async () => {
   ).toBeVisible();
 });
 
+test("DASH_10: Should open Sell order modal", async () => {
+  await simulatorDashboard.clickSell();
+
+  await expect(
+    simulatorDashboard.page.getByText(/SELL/i).first(),
+  ).toBeVisible();
+});
+
+
 });
