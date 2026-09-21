@@ -60,4 +60,13 @@ test.describe("Simulator Dashboard Test Cases", () => {
       simulatorDashboard.page.locator("table").getByText("CIC.N0000", { exact: true }),
     ).toBeVisible();
   });
+
+  test("DASH_06: Should display Orders menu", async () => {
+  await simulatorDashboard.clickOrders();
+
+  await expect(simulatorDashboard.marketDepthMenu).toBeVisible();
+  await expect(simulatorDashboard.buyMenu).toBeVisible();
+  await expect(simulatorDashboard.sellMenu).toBeVisible();
+});
+
 });
