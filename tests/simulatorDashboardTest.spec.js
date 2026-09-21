@@ -105,4 +105,10 @@ test("DASH_12: Should navigate to Leaderboard", async () => {
   await expect(simulatorDashboard.page).toHaveURL('https://asha-securities-web.innov8hrm.com/simulator/leaderboard');
 });
 
+test("DASH_11: Should open User Guide", async () => {
+  await simulatorDashboard.clickUserGuide();
+
+  
+});
+
 });
