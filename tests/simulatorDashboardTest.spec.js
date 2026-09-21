@@ -18,11 +18,22 @@ test.describe("Simulator Dashboard Test Cases", () => {
     await simulatorDashboard.verifyDashboard();
   });
 
+  //search bar functions
   test("DASH_02: Should search for a valid security", async () => {
     await simulatorDashboard.search("CIC.N0000");
 
     await expect(
       simulatorDashboard.page.locator("table").getByText("CIC.N0000"),
+    ).toBeVisible();
+  });
+
+  test("DASH_03: Should search using company name", async () => {
+    await simulatorDashboard.search("SUNSHINE HOLDINGS PLC");
+
+    await expect(
+      simulatorDashboard.page
+        .locator("table")
+        .getByText("SUNSHINE HOLDINGS PLC"),
     ).toBeVisible();
   });
 });
