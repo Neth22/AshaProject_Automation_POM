@@ -256,9 +256,7 @@ test.describe("Simulator Live Market Data Test Cases", () => {
     expect(aggregates.trades).toBeGreaterThanOrEqual(0);
   });
 
-  test("LIVE_07: Should receive valid live ticker data", async ({
-    page,
-  }) => {
+  test("LIVE_07: Should receive valid live ticker data", async ({ page }) => {
     const responsePromise = page.waitForResponse((response) =>
       isApiResponse(response, MARKET_OVERVIEW),
     );
@@ -288,13 +286,11 @@ test.describe("Simulator Live Market Data Test Cases", () => {
 
       expect(typeof item.changePercent).toBe("number");
 
-      expect(["up", "down", "flat"]).toContain(
-        item.direction,
-      );
+      expect(["up", "down", "flat"]).toContain(item.direction);
     }
   });
 
-   test("LIVE_08: Should receive multiple live market overview updates", async ({
+  test("LIVE_08: Should receive multiple live market overview updates", async ({
     page,
   }) => {
     const responses = [];
@@ -321,16 +317,52 @@ test.describe("Simulator Live Market Data Test Cases", () => {
 
     expect(responses.length).toBeGreaterThanOrEqual(2);
 
-    const latestResponse =
-      responses[responses.length - 1];
+    const latestResponse = responses[responses.length - 1];
 
     expect(latestResponse.ok()).toBeTruthy();
 
-    const latestBody =
-      await latestResponse.json();
+    const latestBody = await latestResponse.json();
 
     expect(latestBody.success).toBeTruthy();
 
     expect(latestBody.data).toBeDefined();
+  });
+
+  test("LIVE_09: Should receive multiple live market board updates", async ({
+    page,
+  }) => {
+    const responses = [];
+
+    const responseHandler = (response) => {
+      if (isApiResponse(response, MARKET_BOARD)) {
+        responses.push(response);
+      }
+    };
+
+    page.on("response", responseHandler);
+
+    try {
+      await page.reload();
+
+      await expect
+        .poll(() => responses.length, {
+          timeout: 30000,
+        })
+        .toBeGreaterThanOrEqual(2);
+    } finally {
+      page.off("response", responseHandler);
+    }
+
+    expect(responses.length).toBeGreaterThanOrEqual(2);
+
+    const latestResponse = responses[responses.length - 1];
+
+    expect(latestResponse.ok()).toBeTruthy();
+
+    const latestBody = await latestResponse.json();
+
+    expect(latestBody.success).toBeTruthy();
+
+    expect(latestBody.data.rows.length).toBeGreaterThan(0);
   });
 });
