@@ -256,5 +256,41 @@ test.describe("Simulator Live Market Data Test Cases", () => {
     expect(aggregates.trades).toBeGreaterThanOrEqual(0);
   });
 
-  
+  test("LIVE_07: Should receive valid live ticker data", async ({
+    page,
+  }) => {
+    const responsePromise = page.waitForResponse((response) =>
+      isApiResponse(response, MARKET_OVERVIEW),
+    );
+
+    await page.reload();
+
+    const response = await responsePromise;
+
+    expect(response.ok()).toBeTruthy();
+
+    const body = await response.json();
+
+    const ticker = body.data.ticker;
+
+    expect(Array.isArray(ticker)).toBeTruthy();
+
+    expect(ticker.length).toBeGreaterThan(0);
+
+    for (const item of ticker) {
+      expect(item.symbol).toBeTruthy();
+
+      expect(item.displaySymbol).toBeTruthy();
+
+      expect(typeof item.price).toBe("number");
+
+      expect(typeof item.change).toBe("number");
+
+      expect(typeof item.changePercent).toBe("number");
+
+      expect(["up", "down", "flat"]).toContain(
+        item.direction,
+      );
+    }
+  });
 });
