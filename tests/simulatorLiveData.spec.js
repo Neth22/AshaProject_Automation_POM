@@ -365,4 +365,32 @@ test.describe("Simulator Live Market Data Test Cases", () => {
 
     expect(latestBody.data.rows.length).toBeGreaterThan(0);
   });
+
+  test("LIVE_10: Should display the latest market board data in UI", async ({
+    page,
+  }) => {
+    const responsePromise = page.waitForResponse((response) =>
+      isApiResponse(response, MARKET_BOARD),
+    );
+
+    await page.reload();
+
+    const response = await responsePromise;
+
+    expect(response.ok()).toBeTruthy();
+
+    const body = await response.json();
+
+    const apiRow = body.data.rows.find((row) => row.symbol === "ACL.N0000");
+
+    expect(apiRow).toBeDefined();
+
+    const uiRow = await simulatorDashboard.getSecurityData("ACL.N0000");
+
+    expect(toNumber(uiRow.bidPrice)).toBeCloseTo(apiRow.bidPrice, 2);
+
+    expect(toNumber(uiRow.askPrice)).toBeCloseTo(apiRow.askPrice, 2);
+
+    expect(toNumber(uiRow.last)).toBeCloseTo(apiRow.lastPrice, 2);
+  });
 });
