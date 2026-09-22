@@ -25,7 +25,11 @@ export function toNumber(value) {
   }
 
   const number = Number(
-    String(value).replace(/,/g, "").replace(/%/g, "").trim(),
+    String(value)
+      .replace(/,/g, "")
+      .replace(/%/g, "")
+      .replace(/[▲▼]/g, "")
+      .trim(),
   );
 
   return Number.isNaN(number) ? null : number;
