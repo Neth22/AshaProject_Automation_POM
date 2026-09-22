@@ -225,4 +225,36 @@ test.describe("Simulator Live Market Data Test Cases", () => {
 
     expect(typeof spSl20.changePercent).toBe("number");
   });
+
+  test("LIVE_06: Should receive valid market totals", async ({ page }) => {
+    const responsePromise = page.waitForResponse(async (response) => {
+      return (
+        isApiResponse(response, MARKET_OVERVIEW) && response.status() === 200
+      );
+    });
+
+    await page.reload();
+
+    const response = await responsePromise;
+
+    expect(response.ok()).toBeTruthy();
+
+    const body = await response.json();
+
+    const aggregates = body.data.aggregates;
+
+    expect(typeof aggregates.turnover).toBe("number");
+
+    expect(typeof aggregates.volume).toBe("number");
+
+    expect(typeof aggregates.trades).toBe("number");
+
+    expect(aggregates.turnover).toBeGreaterThanOrEqual(0);
+
+    expect(aggregates.volume).toBeGreaterThanOrEqual(0);
+
+    expect(aggregates.trades).toBeGreaterThanOrEqual(0);
+  });
+
+  
 });
