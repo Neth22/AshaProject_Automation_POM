@@ -187,4 +187,42 @@ test.describe("Simulator Live Market Data Test Cases", () => {
 
     expect(Array.isArray(body.data.ticker)).toBeTruthy();
   });
+
+  test("LIVE_05: Should receive valid ASI and S&P SL20 values", async ({
+    page,
+  }) => {
+    const responsePromise = page.waitForResponse(async (response) => {
+      return (
+        isApiResponse(response, MARKET_OVERVIEW) && response.status() === 200
+      );
+    });
+
+    await page.reload();
+
+    const response = await responsePromise;
+
+    expect(response.ok()).toBeTruthy();
+
+    const body = await response.json();
+
+    const asi = body.data.indices.aspi;
+
+    const spSl20 = body.data.indices.spSl20;
+
+    expect(asi.label).toBe("ASI");
+
+    expect(typeof asi.value).toBe("number");
+
+    expect(typeof asi.change).toBe("number");
+
+    expect(typeof asi.changePercent).toBe("number");
+
+    expect(spSl20.label).toBe("S&P SL20");
+
+    expect(typeof spSl20.value).toBe("number");
+
+    expect(typeof spSl20.change).toBe("number");
+
+    expect(typeof spSl20.changePercent).toBe("number");
+  });
 });
