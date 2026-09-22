@@ -74,7 +74,7 @@ test.describe("Simulator Dashboard Test Cases", () => {
   test("DASH_08: Should open Buy order modal", async () => {
     await simulatorDashboard.clickBuy();
 
-    await expect(simul.page.getByText(/BUY/i).first()).toBeVisible();
+    await expect(simulatorDashboard.page.getByText(/BUY/i).first()).toBeVisible();
   });
 
   test("DASH_09: Should open Market Depth order modal", async () => {
