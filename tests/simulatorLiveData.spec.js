@@ -293,4 +293,44 @@ test.describe("Simulator Live Market Data Test Cases", () => {
       );
     }
   });
+
+   test("LIVE_08: Should receive multiple live market overview updates", async ({
+    page,
+  }) => {
+    const responses = [];
+
+    const responseHandler = (response) => {
+      if (isApiResponse(response, MARKET_OVERVIEW)) {
+        responses.push(response);
+      }
+    };
+
+    page.on("response", responseHandler);
+
+    try {
+      await page.reload();
+
+      await expect
+        .poll(() => responses.length, {
+          timeout: 30000,
+        })
+        .toBeGreaterThanOrEqual(2);
+    } finally {
+      page.off("response", responseHandler);
+    }
+
+    expect(responses.length).toBeGreaterThanOrEqual(2);
+
+    const latestResponse =
+      responses[responses.length - 1];
+
+    expect(latestResponse.ok()).toBeTruthy();
+
+    const latestBody =
+      await latestResponse.json();
+
+    expect(latestBody.success).toBeTruthy();
+
+    expect(latestBody.data).toBeDefined();
+  });
 });
