@@ -64,4 +64,57 @@ test.describe("Simulator Live Market Data Test Cases", () => {
 
     expect(toNumber(uiRow.lastQty)).toBe(apiRow.lastQty);
   });
+
+  test("LIVE_02: Should display all current market data fields", async ({
+    page,
+  }) => {
+    const responsePromise = page.waitForResponse(async (response) => {
+      return isApiResponse(response, MARKET_BOARD) && response.status() === 200;
+    });
+
+    await page.reload();
+
+    const response = await responsePromise;
+
+    expect(response.ok()).toBeTruthy();
+
+    const body = await response.json();
+
+    const apiRow = body.data.rows.find((row) => row.symbol === "ACL.N0000");
+
+    expect(apiRow).toBeDefined();
+
+    const uiRow = await simulatorDashboard.getSecurityData("ACL.N0000");
+
+    expect(uiRow.security).toBe(apiRow.symbol);
+    expect(uiRow.company).toBe(apiRow.companyName);
+
+    expect(toNumber(uiRow.bidQty)).toBe(apiRow.bidQty);
+    expect(toNumber(uiRow.bidPrice)).toBeCloseTo(apiRow.bidPrice, 2);
+
+    expect(toNumber(uiRow.askPrice)).toBeCloseTo(apiRow.askPrice, 2);
+
+    expect(toNumber(uiRow.askQty)).toBe(apiRow.askQty);
+
+    expect(toNumber(uiRow.last)).toBeCloseTo(apiRow.lastPrice, 2);
+
+    expect(toNumber(uiRow.lastQty)).toBe(apiRow.lastQty);
+
+    // console.log("UI CHANGE:", JSON.stringify(uiRow.change));
+    // console.log("API CHANGE:", apiRow.change);
+
+    expect(toNumber(uiRow.change)).toBeCloseTo(apiRow.changePercent, 2);
+
+    expect(toNumber(uiRow.high)).toBeCloseTo(apiRow.dayHigh, 2);
+
+    expect(toNumber(uiRow.low)).toBeCloseTo(apiRow.dayLow, 2);
+
+    expect(toNumber(uiRow.volume)).toBe(apiRow.volume);
+
+    expect(toNumber(uiRow.turnover)).toBe(Math.round(apiRow.turnover));
+
+    expect(toNumber(uiRow.trades)).toBe(apiRow.trades);
+
+    expect(toNumber(uiRow.close)).toBeCloseTo(apiRow.priceClose, 2);
+  });
 });
