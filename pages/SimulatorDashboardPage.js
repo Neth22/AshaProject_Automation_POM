@@ -113,4 +113,38 @@ export class SimulatorDashboardPage {
       .getByText(security, { exact: true })
       .click({ button: "right" });
   }
+
+  async getSecurityRow(security) {
+    return this.page
+      .getByRole("table")
+      .getByRole("row")
+      .filter({
+        hasText: security,
+      })
+      .first();
+  }
+
+  async getSecurityData(security) {
+    const row = await this.getSecurityRow(security);
+
+    await expect(row).toBeVisible();
+
+    return {
+      security: await row.locator("td").nth(0).innerText(),
+      company: await row.locator("td").nth(1).innerText(),
+      bidQty: await row.locator("td").nth(2).innerText(),
+      bidPrice: await row.locator("td").nth(3).innerText(),
+      askPrice: await row.locator("td").nth(4).innerText(),
+      askQty: await row.locator("td").nth(5).innerText(),
+      last: await row.locator("td").nth(6).innerText(),
+      lastQty: await row.locator("td").nth(7).innerText(),
+      change: await row.locator("td").nth(8).innerText(),
+      high: await row.locator("td").nth(9).innerText(),
+      low: await row.locator("td").nth(10).innerText(),
+      volume: await row.locator("td").nth(11).innerText(),
+      turnover: await row.locator("td").nth(12).innerText(),
+      trades: await row.locator("td").nth(13).innerText(),
+      close: await row.locator("td").nth(14).innerText(),
+    };
+  }
 }
