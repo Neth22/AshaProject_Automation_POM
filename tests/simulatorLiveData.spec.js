@@ -117,4 +117,40 @@ test.describe("Simulator Live Market Data Test Cases", () => {
 
     expect(toNumber(uiRow.close)).toBeCloseTo(apiRow.priceClose, 2);
   });
+
+  test("LIVE_03: Should display live data for multiple securities", async ({
+    page,
+  }) => {
+    const responsePromise = page.waitForResponse(async (response) => {
+      return isApiResponse(response, MARKET_BOARD) && response.status() === 200;
+    });
+
+    await page.reload();
+
+    const response = await responsePromise;
+
+    expect(response.ok()).toBeTruthy();
+
+    const body = await response.json();
+
+    const securities = ["CIC.X0000", "DIAL.N0000", "CFIN.N0000", "SINS.N0000"];
+
+    for (const security of securities) {
+      const apiRow = body.data.rows.find((row) => row.symbol === security);
+
+      expect(apiRow).toBeDefined();
+
+      const uiRow = await simulatorDashboard.getSecurityData(security);
+
+      expect(uiRow.security).toBe(apiRow.symbol);
+
+      expect(uiRow.company).toBe(apiRow.companyName);
+
+      expect(toNumber(uiRow.bidPrice)).toBeCloseTo(apiRow.bidPrice, 2);
+
+      expect(toNumber(uiRow.askPrice)).toBeCloseTo(apiRow.askPrice, 2);
+
+      expect(toNumber(uiRow.last)).toBeCloseTo(apiRow.lastPrice, 2);
+    }
+  });
 });
