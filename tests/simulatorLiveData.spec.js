@@ -27,9 +27,9 @@ test.describe("Simulator Live Market Data Test Cases", () => {
   test("LIVE_01: Should display current market board data from API", async ({
     page,
   }) => {
-    const responsePromise = page.waitForResponse((response) =>
-      isApiResponse(response, MARKET_BOARD),
-    );
+    const responsePromise = page.waitForResponse(async (response) => {
+      return isApiResponse(response, MARKET_BOARD) && response.status() === 200;
+    });
 
     await page.reload();
 
