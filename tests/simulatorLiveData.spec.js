@@ -153,4 +153,38 @@ test.describe("Simulator Live Market Data Test Cases", () => {
       expect(toNumber(uiRow.last)).toBeCloseTo(apiRow.lastPrice, 2);
     }
   });
+
+  test("LIVE_04: Should receive current market overview data", async ({
+    page,
+  }) => {
+    const responsePromise = page.waitForResponse(async (response) => {
+      return (
+        isApiResponse(response, MARKET_OVERVIEW) && response.status() === 200
+      );
+    });
+
+    await page.reload();
+
+    const response = await responsePromise;
+
+    expect(response.ok()).toBeTruthy();
+
+    const body = await response.json();
+
+    expect(body.success).toBeTruthy();
+
+    expect(body.data).toBeDefined();
+
+    expect(body.data.indices).toBeDefined();
+
+    expect(body.data.indices.aspi).toBeDefined();
+
+    expect(body.data.indices.spSl20).toBeDefined();
+
+    expect(body.data.aggregates).toBeDefined();
+
+    expect(body.data.ticker).toBeDefined();
+
+    expect(Array.isArray(body.data.ticker)).toBeTruthy();
+  });
 });
