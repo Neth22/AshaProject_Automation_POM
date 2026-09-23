@@ -152,4 +152,14 @@ test.describe("Simulator Dashboard Test Cases", () => {
       joinedDate,
     );
   });
+
+  test("DASH_16: should navigate to login page after clicking logout", async () => {
+    const userName = "Nuhansa De Silva";
+
+    await simulatorDashboard.clickProfile(userName);
+    await simulatorDashboard.clickLogout();
+    await expect(simulatorDashboard.page).toHaveURL(
+      "https://asha-securities-web.innov8hrm.com/simulator/login",
+    );
+  });
 });
