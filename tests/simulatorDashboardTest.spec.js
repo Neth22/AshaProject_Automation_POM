@@ -74,7 +74,9 @@ test.describe("Simulator Dashboard Test Cases", () => {
   test("DASH_08: Should open Buy order modal", async () => {
     await simulatorDashboard.clickBuy();
 
-    await expect(simulatorDashboard.page.getByText(/BUY/i).first()).toBeVisible();
+    await expect(
+      simulatorDashboard.page.getByText(/BUY/i).first(),
+    ).toBeVisible();
   });
 
   test("DASH_09: Should open Market Depth order modal", async () => {
@@ -133,5 +135,21 @@ test.describe("Simulator Dashboard Test Cases", () => {
         exact: true,
       }),
     ).toBeVisible();
+  });
+
+  test("DASH_15: Should display profile details of the logged-in user", async () => {
+    const userName = "Nuhansa De Silva";
+    const clientId = "SIM-32357455";
+    const email = "nseneviratne44@gmail.com";
+    const joinedDate = "Sep 19, 2026";
+
+    await simulatorDashboard.clickProfile(userName);
+
+    await simulatorDashboard.verifyProfileDetails(
+      userName,
+      clientId,
+      email,
+      joinedDate,
+    );
   });
 });
