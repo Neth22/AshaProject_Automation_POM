@@ -49,6 +49,11 @@ export class SimulatorDashboardPage {
 
     this.profilePanel = (userName) =>
       this.profileBtn(userName).locator("xpath=following-sibling::div[1]");
+
+    this.profileLogoutBtn = (userName) =>
+      this.profilePanel(userName).getByRole("button", {
+        name: /Log Out/i,
+      });
   }
 
   async verifyDashboardUrl() {
@@ -112,6 +117,10 @@ export class SimulatorDashboardPage {
   //profile details
   async clickProfile(userName) {
     await this.profileBtn(userName).click();
+  }
+
+  async clickLogout(userName) {
+    await this.profileLogoutBtn(userName).click();
   }
 
   async verifyProfileDetails(userName, clientId, email, joinedDate) {
