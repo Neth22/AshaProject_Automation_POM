@@ -42,6 +42,13 @@ export class SimulatorDashboardPage {
     this.buyMenu = page.getByRole("button", { name: "Buy" });
 
     this.sellMenu = page.getByRole("button", { name: "Sell" });
+
+    //profile
+    this.profileBtn = (userName) =>
+      page.getByRole("button", { name: userName });
+
+    this.profilePanel = (userName) =>
+      this.profileBtn(userName).locator("xpath=following-sibling::div[1]");
   }
 
   async verifyDashboardUrl() {
@@ -100,6 +107,43 @@ export class SimulatorDashboardPage {
   async clickSell() {
     await this.ordersBtn.click();
     await this.sellMenu.click();
+  }
+
+  //profile details
+  async clickProfile(userName) {
+    await this.profileBtn(userName).click();
+  }
+
+  async verifyProfileDetails(userName, clientId, email, joinedDate) {
+    const profilePanel = this.profilePanel(userName);
+
+    await expect(
+      profilePanel.getByText(userName, {
+        exact: true,
+      }),
+    ).toBeVisible();
+
+    await expect(profilePanel.getByText(/Client ID:/)).toBeVisible();
+
+    await expect(profilePanel.getByText(new RegExp(clientId))).toBeVisible();
+
+    await expect(
+      profilePanel.getByText(email, {
+        exact: true,
+      }),
+    ).toBeVisible();
+
+    await expect(
+      profilePanel.getByText(joinedDate, {
+        exact: true,
+      }),
+    ).toBeVisible();
+
+    await expect(
+      profilePanel.getByRole("button", {
+        name: "Log Out",
+      }),
+    ).toBeVisible();
   }
 
   // select security and order menu (right click)
