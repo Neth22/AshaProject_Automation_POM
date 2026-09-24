@@ -384,4 +384,12 @@ test.describe("Simulator Buy Order Functional Tests", () => {
 
     expect(netValue).toBeCloseTo(orderValue + commission, 2);
   });
+
+  test("BUY_20: Should prevent submission when Confirm is unchecked", async () => {
+    await openBuyModal();
+    await buyOrder.enterQuantity(100);
+    await buyOrder.uncheckConfirm();
+    expect(await buyOrder.isConfirmChecked()).toBe(false);
+    await expect(buyOrder.submitBuyButton).toBeDisabled();
+  });
 });
