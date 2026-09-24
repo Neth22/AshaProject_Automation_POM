@@ -424,4 +424,37 @@ test.describe("Simulator Buy Order Functional Tests", () => {
       }),
     ).toBeVisible();
   });
+
+  test("BUY_22: Should submit valid LIMIT Buy order", async ({ page }) => {
+    await openBuyModal();
+    const quantity = 1;
+    const market = await getMarketPrice(page, TEST_SYMBOL, "Buy", quantity);
+    expect(market.success).toBeTruthy();
+    const price = 12.34;
+    expect(typeof price).toBe("number");
+    await buyOrder.selectOrderType("Limit");
+    await buyOrder.enterQuantity(quantity);
+    await buyOrder.enterPrice(price);
+    await buyOrder.checkConfirm();
+    const orderResponsePromise = page.waitForResponse((response) =>
+      isApiResponse(response, ORDERS, "POST"),
+    );
+    await buyOrder.submitBuy();
+    const response = await orderResponsePromise;
+    expect(response.ok()).toBeTruthy();
+    const requestBody = response.request().postDataJSON();
+    expect(requestBody.symbol).toBe(TEST_SYMBOL);
+    expect(requestBody.side).toBe("Buy");
+    expect(Number(requestBody.quantity)).toBe(quantity);
+    expect(requestBody.orderType).toBe("Limit");
+    expect(Number(requestBody.limitPrice)).toBeCloseTo(price, 2);
+    const body = await response.json();
+    expect(body.success).toBeTruthy();
+
+    await expect(
+      page.getByText("✓ Order placed successfully!", {
+        exact: true,
+      }),
+    ).toBeVisible();
+  });
 });
