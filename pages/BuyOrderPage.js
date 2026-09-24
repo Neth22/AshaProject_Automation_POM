@@ -24,15 +24,19 @@ export class SimulatorBuyOrderPage {
      * =========================================================
      */
 
-    this.buyActionButton = this.modal.getByRole("button", {
-      name: "BUY",
-      exact: true,
-    }).first();
+    this.buyActionButton = this.modal
+      .getByRole("button", {
+        name: "BUY",
+        exact: true,
+      })
+      .first();
 
-    this.sellActionButton = this.modal.getByRole("button", {
-      name: "SELL",
-      exact: true,
-    }).first();
+    this.sellActionButton = this.modal
+      .getByRole("button", {
+        name: "SELL",
+        exact: true,
+      })
+      .first();
 
     /*
      * =========================================================
@@ -84,9 +88,7 @@ export class SimulatorBuyOrderPage {
 
     this.clientSelect = this.modal
       .locator("label")
-      .filter({
-        hasText: /^Broker-Client/i,
-      })
+      .filter({ hasText: /^Broker-Client/i })
       .locator("..")
       .locator("select");
 
@@ -96,9 +98,7 @@ export class SimulatorBuyOrderPage {
      * =========================================================
      */
 
-    this.confirmCheckbox = this.modal.locator(
-      'input[type="checkbox"]',
-    );
+    this.confirmCheckbox = this.modal.locator('input[type="checkbox"]');
 
     /*
      * =========================================================
@@ -106,10 +106,12 @@ export class SimulatorBuyOrderPage {
      * =========================================================
      */
 
-    this.submitBuyButton = this.modal.getByRole("button", {
-      name: "BUY",
-      exact: true,
-    }).last();
+    this.submitBuyButton = this.modal
+      .getByRole("button", {
+        name: "BUY",
+        exact: true,
+      })
+      .last();
 
     this.closeButton = this.modal.getByRole("button", {
       name: "CLOSE",
@@ -170,9 +172,7 @@ export class SimulatorBuyOrderPage {
 
   async verifySelectedSecurity(symbol) {
     await expect(
-      this.modal.getByText(
-        new RegExp(`^${escapeRegex(symbol)}\\s+BUY$`, "i"),
-      ),
+      this.modal.getByText(new RegExp(`^${escapeRegex(symbol)}\\s+BUY$`, "i")),
     ).toBeVisible();
   }
 
@@ -221,14 +221,10 @@ export class SimulatorBuyOrderPage {
   async getPriceNumber() {
     const priceText = await this.getPrice();
 
-    const price = Number(
-      priceText.replace(/,/g, "").trim(),
-    );
+    const price = Number(priceText.replace(/,/g, "").trim());
 
     if (Number.isNaN(price)) {
-      throw new Error(
-        `Invalid displayed price: "${priceText}"`,
-      );
+      throw new Error(`Invalid displayed price: "${priceText}"`);
     }
 
     return price;
@@ -293,9 +289,21 @@ export class SimulatorBuyOrderPage {
   async getSelectedClient() {
     await expect(this.clientSelect).toBeVisible();
 
+    const selectedOption = this.clientSelect.locator("option:checked");
+
+    const count = await selectedOption.count();
+
+    if (count === 0) {
+      throw new Error("No Broker-Client option is selected.");
+    }
+
+    return (await selectedOption.innerText()).trim();
+  }
+  async getSelectedClientValue() {
+    await expect(this.clientSelect).toBeVisible();
+
     return await this.clientSelect.inputValue();
   }
-
   /*
    * =========================================================
    * CONFIRM
@@ -357,53 +365,37 @@ export class SimulatorBuyOrderPage {
 
     const text = await parent.innerText();
 
-    const matches = text.match(
-      /-?\d[\d,]*(?:\.\d+)?/g,
-    );
+    const matches = text.match(/-?\d[\d,]*(?:\.\d+)?/g);
 
     if (!matches?.length) {
       return null;
     }
 
-    return toNumber(
-      matches[matches.length - 1],
-    );
+    return toNumber(matches[matches.length - 1]);
   }
 
   async getOrderValue() {
-    return await this.getCalculationValue(
-      "Order Value",
-    );
+    return await this.getCalculationValue("Order Value");
   }
 
   async getCommission() {
-    return await this.getCalculationValue(
-      "Commission",
-    );
+    return await this.getCalculationValue("Commission");
   }
 
   async getNetValue() {
-    return await this.getCalculationValue(
-      "Net Value",
-    );
+    return await this.getCalculationValue("Net Value");
   }
 
   async getBuyingPower() {
-    return await this.getCalculationValue(
-      "Buying Power",
-    );
+    return await this.getCalculationValue("Buying Power");
   }
 
   async getAvailableQty() {
-    return await this.getCalculationValue(
-      "Available Qty",
-    );
+    return await this.getCalculationValue("Available Qty");
   }
 
   async getPendingBuyQty() {
-    return await this.getCalculationValue(
-      "Pending Buy Qty",
-    );
+    return await this.getCalculationValue("Pending Buy Qty");
   }
 
   /*
@@ -433,9 +425,11 @@ export class SimulatorBuyOrderPage {
 
     for (const label of this.marketSummaryLabels) {
       await expect(
-        this.modal.getByText(label, {
-          exact: true,
-        }).first(),
+        this.modal
+          .getByText(label, {
+            exact: true,
+          })
+          .first(),
       ).toBeVisible();
     }
   }
@@ -447,21 +441,13 @@ export class SimulatorBuyOrderPage {
    */
 
   async verifyOrderBookVisible() {
-    await expect(
-      this.bidPriceHeader,
-    ).toBeVisible();
+    await expect(this.bidPriceHeader).toBeVisible();
 
-    await expect(
-      this.bidQtyHeader,
-    ).toBeVisible();
+    await expect(this.bidQtyHeader).toBeVisible();
 
-    await expect(
-      this.askPriceHeader,
-    ).toBeVisible();
+    await expect(this.askPriceHeader).toBeVisible();
 
-    await expect(
-      this.askQtyHeader,
-    ).toBeVisible();
+    await expect(this.askQtyHeader).toBeVisible();
   }
 
   /*
@@ -471,9 +457,7 @@ export class SimulatorBuyOrderPage {
    */
 
   async expectValidationMessage(pattern) {
-    await expect(
-      this.modal.getByText(pattern).last(),
-    ).toBeVisible();
+    await expect(this.modal.getByText(pattern).last()).toBeVisible();
   }
 
   /*
@@ -492,8 +476,5 @@ export class SimulatorBuyOrderPage {
 }
 
 function escapeRegex(value) {
-  return value.replace(
-    /[.*+?^${}()|[\]\\]/g,
-    "\\$&",
-  );
+  return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
