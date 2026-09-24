@@ -106,4 +106,23 @@ test.describe("Simulator Buy Order Functional Tests", () => {
     expect(selectedClient).toBeTruthy();
     expect(selectedClient.length).toBeGreaterThan(0);
   });
+
+  test("BUY_05: Should display correct default Buy values", async ({
+    page,
+  }) => {
+    await openBuyModal();
+    /* * Asset type. */
+    await expect(page.getByText("EQUITY", { exact: true })).toBeVisible();
+    /* * BUY action should be selected/displayed. */ await expect(
+      buyOrder.buyActionButton,
+    ).toBeVisible();
+    /* * Default order type. */
+    await buyOrder.verifyOrderType("Limit");
+    /* * Dynamic market price. */
+    const market = await getMarketPrice(page, TEST_SYMBOL, "Buy", 1);
+    expect(market.success).toBeTruthy();
+    const expectedPrice = market.data.pricePerShare;
+    const actualPrice = await buyOrder.getPriceNumber();
+    expect(actualPrice).toBeCloseTo(expectedPrice, 2);
+  });
 });
