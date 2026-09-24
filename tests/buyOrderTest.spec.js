@@ -469,8 +469,7 @@ test.describe("Simulator Buy Order Functional Tests", () => {
     const market = await getMarketPrice(page, TEST_SYMBOL, "Buy", 1);
     expect(market.success).toBeTruthy();
     const price = market.data.pricePerShare;
-    const invalidQuantity =
-      Math.floor(buyingPower / price) + 1;
+    const invalidQuantity = Math.floor(buyingPower / price) + 1;
     await buyOrder.selectOrderType("MARKET");
     await buyOrder.enterQuantity(invalidQuantity);
     await buyOrder.checkConfirm();
@@ -483,6 +482,12 @@ test.describe("Simulator Buy Order Functional Tests", () => {
         exact: true,
       }),
     ).toBeVisible();
-    
+  });
+
+  test("BUY_24: Should return valid Order Ticket data", async ({ page }) => {
+    await openBuyModal();
+    const ticket = await getOrderTicket(page, TEST_SYMBOL, "Buy", "Limit");
+    expect(ticket.success).toBeTruthy();
+    expect(ticket.data).toBeDefined();
   });
 });
