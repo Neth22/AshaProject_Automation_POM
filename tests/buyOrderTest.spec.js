@@ -226,7 +226,7 @@ test.describe("Simulator Buy Order Functional Tests", () => {
     ).toBeVisible();
   });
 
-  test("BUY_15: Should reject negative LIMIT price", async ({page}) => {
+  test("BUY_15: Should reject negative LIMIT price", async ({ page }) => {
     await openBuyModal();
     await buyOrder.selectOrderType("Limit");
     await buyOrder.enterQuantity(10);
@@ -239,5 +239,15 @@ test.describe("Simulator Buy Order Functional Tests", () => {
         exact: true,
       }),
     ).toBeVisible();
+  });
+
+  test("BUY_17: Should accept valid LIMIT price", async ({ page }) => {
+    await openBuyModal();
+    await buyOrder.selectOrderType("Limit");
+    const market = await getMarketPrice(page, TEST_SYMBOL, "Buy", 1);
+    expect(market.success).toBeTruthy();
+    const validPrice = 15;
+    await buyOrder.enterPrice(validPrice);
+    expect(await buyOrder.getPriceNumber()).toBeCloseTo(validPrice, 2);
   });
 });
