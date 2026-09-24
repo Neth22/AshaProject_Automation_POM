@@ -137,4 +137,17 @@ test.describe("Simulator Buy Order Functional Tests", () => {
     await buyOrder.selectOrderType("Limit");
     await expect(buyOrder.priceInput).toBeEditable();
   });
+
+  test("BUY_08: LIMIT order should display current market price", async ({
+    page,
+  }) => {
+    await openBuyModal();
+    await buyOrder.selectOrderType("Limit");
+    const market = await getMarketPrice(page, TEST_SYMBOL, "Buy", 1);
+    expect(market.success).toBeTruthy();
+    const expectedPrice = market.data.pricePerShare;
+    await expect
+      .poll(async () => await buyOrder.getPriceNumber())
+      .toBeCloseTo(expectedPrice, 2);
+  });
 });
