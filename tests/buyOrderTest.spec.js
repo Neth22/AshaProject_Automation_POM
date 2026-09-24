@@ -125,4 +125,10 @@ test.describe("Simulator Buy Order Functional Tests", () => {
     const actualPrice = await buyOrder.getPriceNumber();
     expect(actualPrice).toBeCloseTo(expectedPrice, 2);
   });
+
+  test("BUY_06: MARKET order should make Price non-editable", async () => {
+    await openBuyModal();
+    await buyOrder.selectOrderType("Market");
+    await expect(buyOrder.priceInput).not.toBeEditable();
+  });
 });
