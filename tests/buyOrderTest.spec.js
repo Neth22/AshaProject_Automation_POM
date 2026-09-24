@@ -198,7 +198,7 @@ test.describe("Simulator Buy Order Functional Tests", () => {
     ).toBeVisible();
   });
 
-  test("BUY_13: Should reject decimal quantity", async ({page}) => {
+  test("BUY_13: Should reject decimal quantity", async ({ page }) => {
     await openBuyModal();
     await buyOrder.enterQuantity(10.5);
     await buyOrder.submitBuyButton.click();
@@ -206,6 +206,21 @@ test.describe("Simulator Buy Order Functional Tests", () => {
     //verify error msg
     await expect(
       page.getByText("✗ Quantity must be a whole number greater than 0.", {
+        exact: true,
+      }),
+    ).toBeVisible();
+  });
+
+  test("BUY_15: Should reject zero LIMIT price", async ({page}) => {
+    await openBuyModal();
+    await buyOrder.selectOrderType("Limit");
+    await buyOrder.enterQuantity (10);
+    await buyOrder.enterPrice(0);
+    await buyOrder.submitBuyButton.click();
+
+    //verify error msg
+    await expect(
+      page.getByText("✗ Price must be greater than 0.", {
         exact: true,
       }),
     ).toBeVisible();
