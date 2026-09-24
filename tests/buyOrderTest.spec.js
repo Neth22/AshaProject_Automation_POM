@@ -150,4 +150,10 @@ test.describe("Simulator Buy Order Functional Tests", () => {
       .poll(async () => await buyOrder.getPriceNumber())
       .toBeCloseTo(expectedPrice, 2);
   });
+
+  test("BUY_09: Should accept valid positive integer quantity", async () => {
+    await openBuyModal();
+    await buyOrder.enterQuantity(100);
+    expect(await buyOrder.getQuantity()).toBe("100");
+  });
 });
