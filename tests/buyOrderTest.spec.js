@@ -53,4 +53,28 @@ test.describe("Simulator Buy Order Functional Tests", () => {
 
     await buyOrder.verifySelectedSecurity(TEST_SYMBOL);
   });
+
+  test("BUY_02: Should display Market Summary correctlyShould display Market Summary correctly", async ({ page }) => {
+    await openBuyModal();
+
+    await buyOrder.verifyMarketSummaryVisible();
+
+    const response = await getMarketPrice(page, TEST_SYMBOL, "Buy", 1);
+
+    expect(response).toBeTruthy();
+
+    expect(response.data).toBeTruthy();
+
+    expect(response.data.pricePerShare).not.toBeUndefined();
+
+    const apiPrice = Number(response.data.pricePerShare);
+
+    expect(Number.isNaN(apiPrice)).toBe(false);
+
+    const uiPrice = await buyOrder.getPriceNumber();
+
+    expect(uiPrice).toBeCloseTo(apiPrice, 2);
+  });
+
+
 });
