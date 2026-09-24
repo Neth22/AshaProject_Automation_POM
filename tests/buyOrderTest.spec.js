@@ -156,4 +156,19 @@ test.describe("Simulator Buy Order Functional Tests", () => {
     await buyOrder.enterQuantity(100);
     expect(await buyOrder.getQuantity()).toBe("100");
   });
+
+  test("BUY_10: Should prevent submission when quantity is blank", async ({
+    page,
+  }) => {
+    await openBuyModal();
+
+    await buyOrder.clearQuantity();
+
+    await buyOrder.submitBuyButton.click();
+
+    //verify error msg
+    await expect(
+      page.getByText("✗ Quantity is required.", { exact: true }),
+    ).toBeVisible();
+  });
 });
