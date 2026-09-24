@@ -457,4 +457,32 @@ test.describe("Simulator Buy Order Functional Tests", () => {
       }),
     ).toBeVisible();
   });
+
+  test("BUY_23: Should reject order when buying power is insufficient", async ({
+    page,
+  }) => {
+    await openBuyModal();
+    const me = await getMe(page);
+    expect(me.success).toBeTruthy();
+    const buyingPower = getBuyingPower(me);
+    expect(buyingPower).not.toBeNull();
+    const market = await getMarketPrice(page, TEST_SYMBOL, "Buy", 1);
+    expect(market.success).toBeTruthy();
+    const price = market.data.pricePerShare;
+    const invalidQuantity =
+      Math.floor(buyingPower / price) + 1;
+    await buyOrder.selectOrderType("MARKET");
+    await buyOrder.enterQuantity(invalidQuantity);
+    await buyOrder.checkConfirm();
+
+    await buyOrder.submitBuyButton.click();
+
+    //verify error msg
+    await expect(
+      page.getByText("✗ Insufficient buying power for this buy order", {
+        exact: true,
+      }),
+    ).toBeVisible();
+    
+  });
 });
