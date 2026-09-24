@@ -54,7 +54,9 @@ test.describe("Simulator Buy Order Functional Tests", () => {
     await buyOrder.verifySelectedSecurity(TEST_SYMBOL);
   });
 
-  test("BUY_02: Should display Market Summary correctlyShould display Market Summary correctly", async ({ page }) => {
+  test("BUY_02: Should display Market Summary correctlyShould display Market Summary correctly", async ({
+    page,
+  }) => {
     await openBuyModal();
 
     await buyOrder.verifyMarketSummaryVisible();
@@ -76,5 +78,15 @@ test.describe("Simulator Buy Order Functional Tests", () => {
     expect(uiPrice).toBeCloseTo(apiPrice, 2);
   });
 
+  test("BUY_03: Should display valid Order Book data", async ({ page }) => {
+    await openBuyModal();
 
+    const orderBook = await getOrderBook(page, TEST_SYMBOL);
+
+    expect(orderBook.success).toBeTruthy();
+
+    expect(orderBook.data).toBeDefined();
+
+    await buyOrder.verifyOrderBookVisible();
+  });
 });
