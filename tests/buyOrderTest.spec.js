@@ -89,4 +89,21 @@ test.describe("Simulator Buy Order Functional Tests", () => {
 
     await buyOrder.verifyOrderBookVisible();
   });
+
+  test("BUY_04: Should display valid client account information", async ({
+    page,
+  }) => {
+    await openBuyModal();
+
+    const me = await getMe(page);
+
+    expect(me).toBeTruthy();
+    expect(me.success).toBeTruthy();
+    expect(me.data).toBeDefined();
+
+    const selectedClient = await buyOrder.getSelectedClient();
+
+    expect(selectedClient).toBeTruthy();
+    expect(selectedClient.length).toBeGreaterThan(0);
+  });
 });
