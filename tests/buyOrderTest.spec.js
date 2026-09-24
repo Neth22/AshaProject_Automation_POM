@@ -131,4 +131,10 @@ test.describe("Simulator Buy Order Functional Tests", () => {
     await buyOrder.selectOrderType("Market");
     await expect(buyOrder.priceInput).not.toBeEditable();
   });
+
+  test("BUY_07: LIMIT order should make Price editable", async () => {
+    await openBuyModal();
+    await buyOrder.selectOrderType("Limit");
+    await expect(buyOrder.priceInput).toBeEditable();
+  });
 });
