@@ -490,4 +490,10 @@ test.describe("Simulator Buy Order Functional Tests", () => {
     expect(ticket.success).toBeTruthy();
     expect(ticket.data).toBeDefined();
   });
+
+  test("BUY_26: Should close Buy modal", async () => {
+    await openBuyModal();
+    await buyOrder.close();
+    await expect(buyOrder.modal).toBeHidden();
+  });
 });
