@@ -392,4 +392,36 @@ test.describe("Simulator Buy Order Functional Tests", () => {
     expect(await buyOrder.isConfirmChecked()).toBe(false);
     await expect(buyOrder.submitBuyButton).toBeDisabled();
   });
+
+  test("BUY_21: Should submit valid MARKET Buy order", async ({ page }) => {
+    await openBuyModal();
+    const market = await getMarketPrice(page, TEST_SYMBOL, "Buy", 1);
+    expect(market.success).toBeTruthy();
+    const quantity = 1;
+    await buyOrder.selectOrderType("MARKET");
+    await buyOrder.enterQuantity(quantity);
+    await buyOrder.checkConfirm();
+    /* * Start waiting BEFORE clicking BUY. */ const orderResponsePromise =
+      page.waitForResponse((response) =>
+        isApiResponse(response, ORDERS, "POST"),
+      );
+    await buyOrder.submitBuy();
+    const response = await orderResponsePromise;
+    expect(response.ok()).toBeTruthy();
+    const requestBody = response.request().postDataJSON();
+    /* * Verify actual API request. */ expect(requestBody.symbol).toBe(
+      TEST_SYMBOL,
+    );
+    expect(requestBody.side).toBe("Buy");
+    expect(Number(requestBody.quantity)).toBe(quantity);
+    expect(requestBody.orderType).toBe("Market");
+    /* * Verify API response. */ const body = await response.json();
+    expect(body.success).toBeTruthy();
+
+    await expect(
+      page.getByText("✓ Order placed successfully!", {
+        exact: true,
+      }),
+    ).toBeVisible();
+  });
 });
