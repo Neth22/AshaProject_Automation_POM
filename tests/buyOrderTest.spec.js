@@ -11,7 +11,6 @@ import {
   getMarketPrice,
   getOrderTicket,
   getOrderBook,
-  getPortfolio,
   getBuyingPower,
 } from "../utils/buyOrderHelper.js";
 
