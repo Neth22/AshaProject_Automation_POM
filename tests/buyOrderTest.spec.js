@@ -317,4 +317,38 @@ test.describe("Simulator Buy Order Functional Tests", () => {
 
     expect(secondOrderValue).toBeGreaterThan(firstOrderValue);
   });
+
+  test("BUY_18: Should update Order Value when Limit Price changes", async () => {
+  await openBuyModal();
+
+  // Select Limit order
+  await buyOrder.selectOrderType("Limit");
+
+  // Enter quantity
+  await buyOrder.enterQuantity(10);
+
+  // Enter first limit price
+  await buyOrder.enterPrice(16.00);
+
+  // Wait until Order Value is calculated
+  await expect
+    .poll(async () => await buyOrder.getOrderValue())
+    .toBeGreaterThan(0);
+
+  const firstOrderValue = await buyOrder.getOrderValue();
+
+  expect(firstOrderValue).toBeGreaterThan(0);
+
+  // Change Limit Price
+  await buyOrder.enterPrice(17.00);
+
+  // Order Value should increase
+  await expect
+    .poll(async () => await buyOrder.getOrderValue())
+    .toBeGreaterThan(firstOrderValue);
+
+  const secondOrderValue = await buyOrder.getOrderValue();
+
+  expect(secondOrderValue).toBeGreaterThan(firstOrderValue);
+});
 });
