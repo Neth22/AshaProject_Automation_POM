@@ -185,9 +185,22 @@ test.describe("Simulator Buy Order Functional Tests", () => {
     ).toBeVisible();
   });
 
-  test("BUY_12: Should reject negative quantity", async ({page}) => {
+  test("BUY_12: Should reject negative quantity", async ({ page }) => {
     await openBuyModal();
     await buyOrder.enterQuantity(-10);
+    await buyOrder.submitBuyButton.click();
+
+    //verify error msg
+    await expect(
+      page.getByText("✗ Quantity must be a whole number greater than 0.", {
+        exact: true,
+      }),
+    ).toBeVisible();
+  });
+
+  test("BUY_13: Should reject decimal quantity", async ({page}) => {
+    await openBuyModal();
+    await buyOrder.enterQuantity(10.5);
     await buyOrder.submitBuyButton.click();
 
     //verify error msg
