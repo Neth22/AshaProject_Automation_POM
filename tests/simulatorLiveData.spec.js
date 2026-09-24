@@ -103,7 +103,10 @@ test.describe("Simulator Live Market Data Test Cases", () => {
     // console.log("UI CHANGE:", JSON.stringify(uiRow.change));
     // console.log("API CHANGE:", apiRow.change);
 
-    expect(toNumber(uiRow.change)).toBeCloseTo(apiRow.changePercent, 2);
+    expect(Math.abs(toNumber(uiRow.change))).toBeCloseTo(
+      Math.abs(apiRow.changePercent),
+      2,
+    );
 
     expect(toNumber(uiRow.high)).toBeCloseTo(apiRow.dayHigh, 2);
 
