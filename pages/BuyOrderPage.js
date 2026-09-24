@@ -11,7 +11,12 @@ export class SimulatorBuyOrderPage {
      * =========================================================
      */
 
-    this.modal = page.getByText(/^[A-Z0-9.]+\s+BUY$/i).first();
+    this.modal = page
+      .locator("aside:visible")
+      .filter({
+        has: page.getByText(/^[A-Z0-9.]+\s+BUY$/i),
+      })
+      .first();
 
     /*
      * =========================================================
@@ -19,19 +24,15 @@ export class SimulatorBuyOrderPage {
      * =========================================================
      */
 
-    this.buyActionButton = page
-      .getByRole("button", {
-        name: "BUY",
-        exact: true,
-      })
-      .first();
+    this.buyActionButton = this.modal.getByRole("button", {
+      name: "BUY",
+      exact: true,
+    }).first();
 
-    this.sellActionButton = page
-      .getByRole("button", {
-        name: "SELL",
-        exact: true,
-      })
-      .first();
+    this.sellActionButton = this.modal.getByRole("button", {
+      name: "SELL",
+      exact: true,
+    }).first();
 
     /*
      * =========================================================
@@ -39,13 +40,13 @@ export class SimulatorBuyOrderPage {
      * =========================================================
      */
 
-    this.quantityLabel = page.getByText("QUANTITY", {
-      exact: true,
-    });
-
-    this.quantityContainer = this.quantityLabel.locator("..");
-
-    this.quantityInput = this.quantityContainer.locator("input").first();
+    this.quantityInput = this.modal
+      .locator("label")
+      .filter({
+        hasText: /^Quantity/i,
+      })
+      .locator("..")
+      .locator('input[type="number"]');
 
     /*
      * =========================================================
@@ -53,13 +54,13 @@ export class SimulatorBuyOrderPage {
      * =========================================================
      */
 
-    this.priceLabel = page.getByText("PRICE", {
-      exact: true,
-    });
-
-    this.priceContainer = this.priceLabel.locator("..");
-
-    this.priceInput = this.priceContainer.locator("input").first();
+    this.priceInput = this.modal
+      .locator("label")
+      .filter({
+        hasText: /^Price/i,
+      })
+      .locator("..")
+      .locator('input[type="number"]');
 
     /*
      * =========================================================
@@ -67,13 +68,13 @@ export class SimulatorBuyOrderPage {
      * =========================================================
      */
 
-    this.orderTypeLabel = page.getByText("ORDER TYPE", {
-      exact: true,
-    });
-
-    this.orderTypeContainer = this.orderTypeLabel.locator("..");
-
-    this.orderTypeButton = this.orderTypeContainer.getByRole("button").first();
+    this.orderTypeSelect = this.modal
+      .locator("label")
+      .filter({
+        hasText: /^Order Type/i,
+      })
+      .locator("..")
+      .locator("select");
 
     /*
      * =========================================================
@@ -81,13 +82,13 @@ export class SimulatorBuyOrderPage {
      * =========================================================
      */
 
-    this.clientLabel = page.getByText("BROKER-CLIENT", {
-      exact: true,
-    });
-
-    this.clientContainer = this.clientLabel.locator("..");
-
-    this.clientButton = this.clientContainer.getByRole("button").first();
+    this.clientSelect = this.modal
+      .locator("label")
+      .filter({
+        hasText: /^Broker-Client/i,
+      })
+      .locator("..")
+      .locator("select");
 
     /*
      * =========================================================
@@ -95,7 +96,9 @@ export class SimulatorBuyOrderPage {
      * =========================================================
      */
 
-    this.confirmCheckbox = page.locator('input[type="checkbox"]').last();
+    this.confirmCheckbox = this.modal.locator(
+      'input[type="checkbox"]',
+    );
 
     /*
      * =========================================================
@@ -103,18 +106,15 @@ export class SimulatorBuyOrderPage {
      * =========================================================
      */
 
-    this.submitBuyButton = page
-      .getByRole("button", {
-        name: "BUY",
-        exact: true,
-      })
-      .last();
+    this.submitBuyButton = this.modal.getByRole("button", {
+      name: "BUY",
+      exact: true,
+    }).last();
 
-    this.closeButton = page
-      .getByRole("button", {
-        name: /close/i,
-      })
-      .last();
+    this.closeButton = this.modal.getByRole("button", {
+      name: "CLOSE",
+      exact: true,
+    });
 
     /*
      * =========================================================
@@ -141,9 +141,21 @@ export class SimulatorBuyOrderPage {
      * =========================================================
      */
 
-    this.orderBookHeader = page.getByText(
-      /BID\s*--\s*BID QTY|ASK\s*--\s*ASK QTY/i,
-    );
+    this.bidPriceHeader = this.modal.getByText("Bid Price", {
+      exact: true,
+    });
+
+    this.bidQtyHeader = this.modal.getByText("Bid Qty", {
+      exact: true,
+    });
+
+    this.askPriceHeader = this.modal.getByText("Ask Price", {
+      exact: true,
+    });
+
+    this.askQtyHeader = this.modal.getByText("Ask Qty", {
+      exact: true,
+    });
   }
 
   /*
@@ -153,14 +165,14 @@ export class SimulatorBuyOrderPage {
    */
 
   async verifyModalVisible() {
-    await expect(
-      this.page.getByText(/[A-Z0-9.]+\s+BUY/i).first(),
-    ).toBeVisible();
+    await expect(this.modal).toBeVisible();
   }
 
   async verifySelectedSecurity(symbol) {
     await expect(
-      this.page.getByText(new RegExp(`^${escapeRegex(symbol)}\\s+BUY$`, "i")),
+      this.modal.getByText(
+        new RegExp(`^${escapeRegex(symbol)}\\s+BUY$`, "i"),
+      ),
     ).toBeVisible();
   }
 
@@ -171,6 +183,8 @@ export class SimulatorBuyOrderPage {
    */
 
   async getQuantity() {
+    await expect(this.quantityInput).toBeVisible();
+
     return await this.quantityInput.inputValue();
   }
 
@@ -182,6 +196,10 @@ export class SimulatorBuyOrderPage {
     await this.quantityInput.fill("");
   }
 
+  async isQuantityEditable() {
+    return await this.quantityInput.isEditable();
+  }
+
   /*
    * =========================================================
    * PRICE
@@ -189,11 +207,31 @@ export class SimulatorBuyOrderPage {
    */
 
   async getPrice() {
-    return await this.priceInput.inputValue();
+    await expect(this.priceInput).toBeVisible();
+
+    const value = await this.priceInput.inputValue();
+
+    if (!value || value.trim() === "") {
+      throw new Error("Price input is empty.");
+    }
+
+    return value.trim();
   }
 
   async getPriceNumber() {
-    return toNumber(await this.getPrice());
+    const priceText = await this.getPrice();
+
+    const price = Number(
+      priceText.replace(/,/g, "").trim(),
+    );
+
+    if (Number.isNaN(price)) {
+      throw new Error(
+        `Invalid displayed price: "${priceText}"`,
+      );
+    }
+
+    return price;
   }
 
   async enterPrice(price) {
@@ -215,49 +253,47 @@ export class SimulatorBuyOrderPage {
    */
 
   async selectOrderType(type) {
-    await this.orderTypeButton.click();
+    await expect(this.orderTypeSelect).toBeVisible();
 
-    await this.page
-      .getByText(type, {
-        exact: true,
-      })
-      .last()
-      .click();
+    await this.orderTypeSelect.selectOption({
+      label: type.toUpperCase(),
+    });
+  }
+
+  async getSelectedOrderType() {
+    await expect(this.orderTypeSelect).toBeVisible();
+
+    return await this.orderTypeSelect.inputValue();
   }
 
   async verifyOrderType(type) {
-    await expect(
-      this.page
-        .getByText(type, {
-          exact: true,
-        })
-        .first(),
-    ).toBeVisible();
+    await expect(this.orderTypeSelect).toHaveValue(type);
   }
 
   /*
    * =========================================================
-   * CLIENT
+   * BROKER CLIENT
    * =========================================================
    */
 
   async openClientDropdown() {
-    await this.clientButton.click();
+    await expect(this.clientSelect).toBeVisible();
+
+    await this.clientSelect.click();
   }
 
   async selectClient(clientName) {
-    await this.openClientDropdown();
+    await expect(this.clientSelect).toBeVisible();
 
-    await this.page
-      .getByText(clientName, {
-        exact: true,
-      })
-      .last()
-      .click();
+    await this.clientSelect.selectOption({
+      label: clientName,
+    });
   }
 
   async getSelectedClient() {
-    return (await this.clientButton.innerText()).trim();
+    await expect(this.clientSelect).toBeVisible();
+
+    return await this.clientSelect.inputValue();
   }
 
   /*
@@ -267,12 +303,16 @@ export class SimulatorBuyOrderPage {
    */
 
   async checkConfirm() {
+    await expect(this.confirmCheckbox).toBeVisible();
+
     if (!(await this.confirmCheckbox.isChecked())) {
       await this.confirmCheckbox.check();
     }
   }
 
   async uncheckConfirm() {
+    await expect(this.confirmCheckbox).toBeVisible();
+
     if (await this.confirmCheckbox.isChecked()) {
       await this.confirmCheckbox.uncheck();
     }
@@ -289,6 +329,8 @@ export class SimulatorBuyOrderPage {
    */
 
   async submitBuy() {
+    await expect(this.submitBuyButton).toBeVisible();
+
     await this.submitBuyButton.click();
   }
 
@@ -303,50 +345,65 @@ export class SimulatorBuyOrderPage {
    */
 
   async getCalculationValue(label) {
-    const labelLocator = this.page
+    const labelLocator = this.modal
       .getByText(label, {
         exact: true,
       })
       .last();
 
+    await expect(labelLocator).toBeVisible();
+
     const parent = labelLocator.locator("..");
 
     const text = await parent.innerText();
 
-    /*
-     * Extract the final numeric value.
-     */
-    const matches = text.match(/-?\d[\d,]*(?:\.\d+)?/g);
+    const matches = text.match(
+      /-?\d[\d,]*(?:\.\d+)?/g,
+    );
 
     if (!matches?.length) {
       return null;
     }
 
-    return toNumber(matches[matches.length - 1]);
+    return toNumber(
+      matches[matches.length - 1],
+    );
   }
 
   async getOrderValue() {
-    return await this.getCalculationValue("Order Value");
+    return await this.getCalculationValue(
+      "Order Value",
+    );
   }
 
   async getCommission() {
-    return await this.getCalculationValue("Commission");
+    return await this.getCalculationValue(
+      "Commission",
+    );
   }
 
   async getNetValue() {
-    return await this.getCalculationValue("Net Value");
+    return await this.getCalculationValue(
+      "Net Value",
+    );
   }
 
   async getBuyingPower() {
-    return await this.getCalculationValue("Buying Power");
+    return await this.getCalculationValue(
+      "Buying Power",
+    );
   }
 
   async getAvailableQty() {
-    return await this.getCalculationValue("Available Qty");
+    return await this.getCalculationValue(
+      "Available Qty",
+    );
   }
 
   async getPendingBuyQty() {
-    return await this.getCalculationValue("Pending Buy Qty");
+    return await this.getCalculationValue(
+      "Pending Buy Qty",
+    );
   }
 
   /*
@@ -356,11 +413,13 @@ export class SimulatorBuyOrderPage {
    */
 
   async getMarketSummaryValue(label) {
-    const labelLocator = this.page
+    const labelLocator = this.modal
       .getByText(label, {
         exact: true,
       })
       .first();
+
+    await expect(labelLocator).toBeVisible();
 
     const parent = labelLocator.locator("..");
 
@@ -370,13 +429,13 @@ export class SimulatorBuyOrderPage {
   }
 
   async verifyMarketSummaryVisible() {
+    await expect(this.modal).toBeVisible();
+
     for (const label of this.marketSummaryLabels) {
       await expect(
-        this.page
-          .getByText(label, {
-            exact: true,
-          })
-          .first(),
+        this.modal.getByText(label, {
+          exact: true,
+        }).first(),
       ).toBeVisible();
     }
   }
@@ -388,9 +447,21 @@ export class SimulatorBuyOrderPage {
    */
 
   async verifyOrderBookVisible() {
-    await expect(this.page.getByText(/BID\s*--\s*BID QTY/i)).toBeVisible();
+    await expect(
+      this.bidPriceHeader,
+    ).toBeVisible();
 
-    await expect(this.page.getByText(/ASK\s*--\s*ASK QTY/i)).toBeVisible();
+    await expect(
+      this.bidQtyHeader,
+    ).toBeVisible();
+
+    await expect(
+      this.askPriceHeader,
+    ).toBeVisible();
+
+    await expect(
+      this.askQtyHeader,
+    ).toBeVisible();
   }
 
   /*
@@ -400,7 +471,9 @@ export class SimulatorBuyOrderPage {
    */
 
   async expectValidationMessage(pattern) {
-    await expect(this.page.getByText(pattern).last()).toBeVisible();
+    await expect(
+      this.modal.getByText(pattern).last(),
+    ).toBeVisible();
   }
 
   /*
@@ -410,10 +483,17 @@ export class SimulatorBuyOrderPage {
    */
 
   async close() {
+    await expect(this.closeButton).toBeVisible();
+
     await this.closeButton.click();
+
+    await expect(this.modal).toBeHidden();
   }
 }
 
 function escapeRegex(value) {
-  return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  return value.replace(
+    /[.*+?^${}()|[\]\\]/g,
+    "\\$&",
+  );
 }

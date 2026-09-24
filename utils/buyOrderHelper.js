@@ -4,12 +4,116 @@ import {
   ORDER_TICKET,
   ORDER_BOOK,
   PORTFOLIO,
-} from "./marketDataHelper";
+} from "./marketDataHelper.js";
 
-// ....GET /me ...
+/*
+ * =========================================================
+ * AUTHENTICATION
+ * =========================================================
+ *
+ * The application may keep authentication in:
+ * - localStorage
+ * - sessionStorage
+ * - browser cookies
+ *
+ * page.request automatically shares the browser context cookies.
+ * For token-based authentication, we also try to find the token
+ * from browser storage.
+ */
+
+async function getAuthToken(page) {
+  const token = await page.evaluate(() => {
+    const storageKeys = [
+      ...Object.keys(localStorage),
+      ...Object.keys(sessionStorage),
+    ];
+
+    for (const key of storageKeys) {
+      const localValue = localStorage.getItem(key);
+      const sessionValue = sessionStorage.getItem(key);
+
+      const value = localValue || sessionValue;
+
+      if (!value) {
+        continue;
+      }
+
+     
+
+      const cleanedValue = value.replace(/^Bearer\s+/i, "").trim();
+
+     
+      if (cleanedValue.split(".").length === 3 && cleanedValue.length > 50) {
+        return cleanedValue;
+      }
+
+      /*
+       * Sometimes the token is stored inside a JSON object.
+       */
+      try {
+        const parsed = JSON.parse(value);
+
+        if (parsed && typeof parsed === "object") {
+          const possibleTokenKeys = [
+            "token",
+            "accessToken",
+            "access_token",
+            "authToken",
+            "jwt",
+            "idToken",
+          ];
+
+          for (const tokenKey of possibleTokenKeys) {
+            if (parsed[tokenKey] && typeof parsed[tokenKey] === "string") {
+              return parsed[tokenKey].replace(/^Bearer\s+/i, "");
+            }
+          }
+        }
+      } catch {
+       
+      }
+    }
+
+    return null;
+  });
+
+  return token;
+}
+
+/*
+ * =========================================================
+ * AUTHENTICATED GET
+ * =========================================================
+ */
+
+async function authenticatedGet(page, url) {
+  const token = await getAuthToken(page);
+
+  /*
+   * If a token exists, explicitly send it.
+   */
+  if (token) {
+    return await page.request.get(url, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+  }
+
+  /*
+   * If no token was found, still use page.request.  
+   */
+  return await page.request.get(url);
+}
+
+/*
+ * =========================================================
+ * GET /me
+ * =========================================================
+ */
 
 export async function getMe(page) {
-  const response = await page.request.get(ME);
+  const response = await authenticatedGet(page, ME);
 
   if (!response.ok()) {
     throw new Error(`GET /me failed: ${response.status()}`);
@@ -24,14 +128,19 @@ export async function getMe(page) {
   return body;
 }
 
-//Get market price data .... GET /market-price/{symbol}
+/*
+ * =========================================================
+ * GET /market-price/{symbol}
+ * =========================================================
+ */
+
 export async function getMarketPrice(page, symbol, side = "Buy", quantity = 1) {
   const url =
     `${MARKET_PRICE}/${encodeURIComponent(symbol)}` +
     `?side=${encodeURIComponent(side)}` +
     `&quantity=${encodeURIComponent(quantity)}`;
 
-  const response = await page.request.get(url);
+  const response = await authenticatedGet(page, url);
 
   if (!response.ok()) {
     throw new Error(`GET market-price failed: ${response.status()}`);
@@ -46,7 +155,12 @@ export async function getMarketPrice(page, symbol, side = "Buy", quantity = 1) {
   return body;
 }
 
-//Get order ticket data .... GET /order-ticket/{symbol}
+/*
+ * =========================================================
+ * GET /order-ticket/{symbol}
+ * =========================================================
+ */
+
 export async function getOrderTicket(
   page,
   symbol,
@@ -58,7 +172,7 @@ export async function getOrderTicket(
     `?side=${encodeURIComponent(side)}` +
     `&orderType=${encodeURIComponent(orderType)}`;
 
-  const response = await page.request.get(url);
+  const response = await authenticatedGet(page, url);
 
   if (!response.ok()) {
     throw new Error(`GET order-ticket failed: ${response.status()}`);
@@ -73,12 +187,16 @@ export async function getOrderTicket(
   return body;
 }
 
-//Get order book data .... GET /order-book/{symbol}
+/*
+ * =========================================================
+ * GET /order-book/{symbol}
+ * =========================================================
+ */
 
 export async function getOrderBook(page, symbol) {
   const url = `${ORDER_BOOK}/${encodeURIComponent(symbol)}`;
 
-  const response = await page.request.get(url);
+  const response = await authenticatedGet(page, url);
 
   if (!response.ok()) {
     throw new Error(`GET order-book failed: ${response.status()}`);
@@ -93,10 +211,14 @@ export async function getOrderBook(page, symbol) {
   return body;
 }
 
-//Get portfolio data .... GET /portfolio ....
+/*
+ * =========================================================
+ * GET /portfolio
+ * =========================================================
+ */
 
 export async function getPortfolio(page) {
-  const response = await page.request.get(PORTFOLIO);
+  const response = await authenticatedGet(page, PORTFOLIO);
 
   if (!response.ok()) {
     throw new Error(`GET portfolio failed: ${response.status()}`);
@@ -111,7 +233,10 @@ export async function getPortfolio(page) {
   return body;
 }
 
-// Safely find a numeric field from an object.
+/*
+ * =========================================================
+ * NUMERIC FIELD HELPER
+ * ========================================================= */
 
 export function getNumericField(object, possibleNames) {
   for (const name of possibleNames) {
@@ -127,7 +252,10 @@ export function getNumericField(object, possibleNames) {
   return null;
 }
 
-//Extract buying power from /me.
+/*
+ * =========================================================
+ * BUYING POWER
+ * ========================================================= */
 
 export function getBuyingPower(me) {
   const data = me?.data;
@@ -146,6 +274,11 @@ export function getBuyingPower(me) {
   );
 }
 
+/*
+ * =========================================================
+ * CLIENT ID
+ * ========================================================= */
+
 export function getClientId(me) {
   const data = me?.data;
 
@@ -159,7 +292,11 @@ export function getClientId(me) {
   );
 }
 
-//Extract client information from /me
+/*
+ * =========================================================
+ * CLIENT NAME
+ * ========================================================= */
+
 export function getClientName(me) {
   const data = me?.data;
 
