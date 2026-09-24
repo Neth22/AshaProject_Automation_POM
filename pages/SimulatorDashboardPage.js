@@ -167,6 +167,22 @@ export class SimulatorDashboardPage {
       .click({ button: "right" });
   }
 
+  async openBuyForSecurity(security) {
+    // Right-click the requested stock.
+    await this.rightClickSecurity(security);
+
+    // Context menu Buy button.
+    const buyButton = this.page.getByRole("button", {
+      name: "Buy",
+      exact: true,
+    });
+
+    await expect(buyButton).toBeVisible();
+
+    // Open Buy modal.
+    await buyButton.click();
+  }
+
   async getSecurityRow(security) {
     return this.page
       .getByRole("table")
