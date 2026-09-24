@@ -319,36 +319,69 @@ test.describe("Simulator Buy Order Functional Tests", () => {
   });
 
   test("BUY_18: Should update Order Value when Limit Price changes", async () => {
-  await openBuyModal();
+    await openBuyModal();
 
-  // Select Limit order
-  await buyOrder.selectOrderType("Limit");
+    // Select Limit order
+    await buyOrder.selectOrderType("Limit");
 
-  // Enter quantity
-  await buyOrder.enterQuantity(10);
+    // Enter quantity
+    await buyOrder.enterQuantity(10);
 
-  // Enter first limit price
-  await buyOrder.enterPrice(16.00);
+    // Enter first limit price
+    await buyOrder.enterPrice(16.0);
 
-  // Wait until Order Value is calculated
-  await expect
-    .poll(async () => await buyOrder.getOrderValue())
-    .toBeGreaterThan(0);
+    // Wait until Order Value is calculated
+    await expect
+      .poll(async () => await buyOrder.getOrderValue())
+      .toBeGreaterThan(0);
 
-  const firstOrderValue = await buyOrder.getOrderValue();
+    const firstOrderValue = await buyOrder.getOrderValue();
 
-  expect(firstOrderValue).toBeGreaterThan(0);
+    expect(firstOrderValue).toBeGreaterThan(0);
 
-  // Change Limit Price
-  await buyOrder.enterPrice(17.00);
+    // Change Limit Price
+    await buyOrder.enterPrice(17.0);
 
-  // Order Value should increase
-  await expect
-    .poll(async () => await buyOrder.getOrderValue())
-    .toBeGreaterThan(firstOrderValue);
+    // Order Value should increase
+    await expect
+      .poll(async () => await buyOrder.getOrderValue())
+      .toBeGreaterThan(firstOrderValue);
 
-  const secondOrderValue = await buyOrder.getOrderValue();
+    const secondOrderValue = await buyOrder.getOrderValue();
 
-  expect(secondOrderValue).toBeGreaterThan(firstOrderValue);
-});
+    expect(secondOrderValue).toBeGreaterThan(firstOrderValue);
+  });
+
+  test("BUY_19: Should calculate Net Value correctly", async () => {
+    await openBuyModal();
+
+    await buyOrder.selectOrderType("Market");
+    await buyOrder.enterQuantity(100);
+
+    // Wait until Order Value is actually calculated
+    await expect
+      .poll(async () => await buyOrder.getOrderValue())
+      .toBeGreaterThan(0);
+
+    // Wait until Commission is calculated
+    await expect
+      .poll(async () => await buyOrder.getCommission())
+      .toBeGreaterThan(0);
+
+    // Read the calculated values
+    const orderValue = await buyOrder.getOrderValue();
+    const commission = await buyOrder.getCommission();
+
+    expect(orderValue).toBeGreaterThan(0);
+    expect(commission).toBeGreaterThan(0);
+
+    // Net Value = Order Value + Commission
+    await expect
+      .poll(async () => await buyOrder.getNetValue())
+      .toBeCloseTo(orderValue + commission, 2);
+
+    const netValue = await buyOrder.getNetValue();
+
+    expect(netValue).toBeCloseTo(orderValue + commission, 2);
+  });
 });
