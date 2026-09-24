@@ -241,7 +241,7 @@ test.describe("Simulator Buy Order Functional Tests", () => {
     ).toBeVisible();
   });
 
-  test("BUY_17: Should accept valid LIMIT price", async ({ page }) => {
+  test("BUY_16: Should accept valid LIMIT price", async ({ page }) => {
     await openBuyModal();
     await buyOrder.selectOrderType("Limit");
     const market = await getMarketPrice(page, TEST_SYMBOL, "Buy", 1);
@@ -249,5 +249,72 @@ test.describe("Simulator Buy Order Functional Tests", () => {
     const validPrice = 15;
     await buyOrder.enterPrice(validPrice);
     expect(await buyOrder.getPriceNumber()).toBeCloseTo(validPrice, 2);
+  });
+
+  test("BUY_17: Should update Order Value when quantity changes", async ({
+    page,
+  }) => {
+    await openBuyModal();
+
+    await buyOrder.selectOrderType("Market");
+
+    // ============================================
+    // Quantity = 10
+    // ============================================
+
+    await buyOrder.enterQuantity(10);
+
+    const firstApiResponse = await getMarketPrice(page, TEST_SYMBOL, "Buy", 10);
+
+    expect(firstApiResponse.success).toBeTruthy();
+    expect(firstApiResponse.data).toBeDefined();
+
+    const firstExpectedOrderValue = Number(firstApiResponse.data.total);
+
+    expect(firstExpectedOrderValue).toBeGreaterThan(0);
+
+    // Wait until UI calculation matches API
+    await expect
+      .poll(async () => await buyOrder.getOrderValue())
+      .toBeCloseTo(firstExpectedOrderValue, 2);
+
+    const firstOrderValue = await buyOrder.getOrderValue();
+
+    expect(firstOrderValue).toBeCloseTo(firstExpectedOrderValue, 2);
+
+    // ============================================
+    // Quantity = 100
+    // ============================================
+
+    await buyOrder.enterQuantity(100);
+
+    const secondApiResponse = await getMarketPrice(
+      page,
+      TEST_SYMBOL,
+      "Buy",
+      100,
+    );
+
+    expect(secondApiResponse.success).toBeTruthy();
+    expect(secondApiResponse.data).toBeDefined();
+
+    const secondExpectedOrderValue = Number(secondApiResponse.data.total);
+
+    expect(secondExpectedOrderValue).toBeGreaterThan(0);
+
+    // Wait until UI finishes recalculating
+    await expect
+      .poll(async () => await buyOrder.getOrderValue())
+      .toBeCloseTo(secondExpectedOrderValue, 2);
+
+    const secondOrderValue = await buyOrder.getOrderValue();
+
+    expect(secondOrderValue).toBeCloseTo(secondExpectedOrderValue, 2);
+
+    // ============================================
+    // Verify quantity increase changes Order Value
+    // ============================================
+
+    expect(secondOrderValue).toBeGreaterThan(firstOrderValue);
   });
 });
