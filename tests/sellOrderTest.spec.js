@@ -101,4 +101,34 @@ test.describe("Simulator Sell Order Functional Tests", () => {
 
     await sellOrder.verifyOrderBookData(orderBook);
   });
+
+  test("SELL_05: Should display correct default Sell values", async ({
+    page,
+  }) => {
+    await openSellModal();
+
+    // Asset
+    await expect(
+      page.getByText("EQUITY", {
+        exact: true,
+      }),
+    ).toBeVisible();
+
+    // SELL selected
+    await expect(sellOrder.sellActionButton).toBeVisible();
+
+    // Default order type
+    await sellOrder.verifyOrderType("Limit");
+
+    // Dynamic Sell price
+    const market = await getMarketPrice(page, TEST_SYMBOL, "Sell", 1);
+
+    expect(market.success).toBeTruthy();
+
+    const expectedPrice = Number(market.data.pricePerShare);
+
+    const actualPrice = await sellOrder.getPriceNumber();
+
+    expect(actualPrice).toBeCloseTo(expectedPrice, 2);
+  });
 });
