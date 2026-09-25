@@ -6,20 +6,7 @@ import {
   PORTFOLIO,
 } from "./marketDataHelper.js";
 
-/*
- * =========================================================
- * AUTHENTICATION
- * =========================================================
- *
- * The application may keep authentication in:
- * - localStorage
- * - sessionStorage
- * - browser cookies
- *
- * page.request automatically shares the browser context cookies.
- * For token-based authentication, we also try to find the token
- * from browser storage.
- */
+// AUTHENTICATION
 
 async function getAuthToken(page) {
   const token = await page.evaluate(() => {
@@ -38,18 +25,14 @@ async function getAuthToken(page) {
         continue;
       }
 
-     
-
       const cleanedValue = value.replace(/^Bearer\s+/i, "").trim();
 
-     
       if (cleanedValue.split(".").length === 3 && cleanedValue.length > 50) {
         return cleanedValue;
       }
 
-      /*
-       * Sometimes the token is stored inside a JSON object.
-       */
+      // Sometimes the token is stored inside a JSON object.
+
       try {
         const parsed = JSON.parse(value);
 
@@ -69,9 +52,7 @@ async function getAuthToken(page) {
             }
           }
         }
-      } catch {
-       
-      }
+      } catch {}
     }
 
     return null;
@@ -80,11 +61,7 @@ async function getAuthToken(page) {
   return token;
 }
 
-/*
- * =========================================================
- * AUTHENTICATED GET
- * =========================================================
- */
+//AUTHENTICATED GET
 
 async function authenticatedGet(page, url) {
   const token = await getAuthToken(page);
@@ -101,16 +78,12 @@ async function authenticatedGet(page, url) {
   }
 
   /*
-   * If no token was found, still use page.request.  
+   * If no token was found, still use page.request.
    */
   return await page.request.get(url);
 }
 
-/*
- * =========================================================
- * GET /me
- * =========================================================
- */
+// GET /me
 
 export async function getMe(page) {
   const response = await authenticatedGet(page, ME);
@@ -128,11 +101,7 @@ export async function getMe(page) {
   return body;
 }
 
-/*
- * =========================================================
- * GET /market-price/{symbol}
- * =========================================================
- */
+//GET /market-price/{symbol}
 
 export async function getMarketPrice(page, symbol, side = "Buy", quantity = 1) {
   const url =
@@ -155,11 +124,7 @@ export async function getMarketPrice(page, symbol, side = "Buy", quantity = 1) {
   return body;
 }
 
-/*
- * =========================================================
- * GET /order-ticket/{symbol}
- * =========================================================
- */
+// GET /order-ticket/{symbol}
 
 export async function getOrderTicket(
   page,
@@ -187,11 +152,7 @@ export async function getOrderTicket(
   return body;
 }
 
-/*
- * =========================================================
- * GET /order-book/{symbol}
- * =========================================================
- */
+// GET /order-book/{symbol}
 
 export async function getOrderBook(page, symbol) {
   const url = `${ORDER_BOOK}/${encodeURIComponent(symbol)}`;
@@ -211,11 +172,7 @@ export async function getOrderBook(page, symbol) {
   return body;
 }
 
-/*
- * =========================================================
- * GET /portfolio
- * =========================================================
- */
+// GET /portfolio
 
 export async function getPortfolio(page) {
   const response = await authenticatedGet(page, PORTFOLIO);
@@ -233,10 +190,7 @@ export async function getPortfolio(page) {
   return body;
 }
 
-/*
- * =========================================================
- * NUMERIC FIELD HELPER
- * ========================================================= */
+//NUMERIC FIELD HELPER
 
 export function getNumericField(object, possibleNames) {
   for (const name of possibleNames) {
@@ -252,10 +206,7 @@ export function getNumericField(object, possibleNames) {
   return null;
 }
 
-/*
- * =========================================================
- * BUYING POWER
- * ========================================================= */
+//BUYING POWER
 
 export function getBuyingPower(me) {
   const data = me?.data;
@@ -274,10 +225,7 @@ export function getBuyingPower(me) {
   );
 }
 
-/*
- * =========================================================
- * CLIENT ID
- * ========================================================= */
+// CLIENT ID
 
 export function getClientId(me) {
   const data = me?.data;
@@ -292,10 +240,7 @@ export function getClientId(me) {
   );
 }
 
-/*
- * =========================================================
- * CLIENT NAME
- * ========================================================= */
+// CLIENT NAME
 
 export function getClientName(me) {
   const data = me?.data;
