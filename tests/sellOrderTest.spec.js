@@ -75,7 +75,7 @@ test.describe("Simulator Sell Order Functional Tests", () => {
     expect(uiPrice).toBeCloseTo(apiPrice, 2);
   });
 
-  test("SELL_04: Should display valid client account information", async ({
+  test("SELL_03: Should display valid client account information", async ({
     page,
   }) => {
     await openSellModal();
@@ -89,5 +89,16 @@ test.describe("Simulator Sell Order Functional Tests", () => {
 
     expect(selectedClient).toBeTruthy();
     expect(selectedClient.length).toBeGreaterThan(0);
+  });
+
+  test("SELL_04: Should display valid Order Book data", async ({ page }) => {
+    await openSellModal();
+
+    const orderBook = await getOrderBook(page, TEST_SYMBOL);
+
+    expect(orderBook.success).toBeTruthy();
+    expect(orderBook.data).toBeDefined();
+
+    await sellOrder.verifyOrderBookData(orderBook);
   });
 });
