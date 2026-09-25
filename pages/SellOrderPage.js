@@ -11,9 +11,9 @@ export class SimulatorSellOrderPage {
     this.modal = page
       .locator("aside:visible")
       .filter({
-        has: page.getByText(/^[A-Z0-9.]+\s+SELL$/i),
+        hasText: /SELL/i,
       })
-      .first();
+      .last();
 
     // ========================================================
     // MODAL HEADER
@@ -159,40 +159,50 @@ export class SimulatorSellOrderPage {
   // ORDER BOOK
   // ==========================================================
 
-  async verifyOrderBookVisible() {
-    await expect(
-      this.modal.getByText("BID", {
-        exact: true,
-      }),
-    ).toBeVisible();
+  async verifyOrderBookData(orderBook) {
+    await expect(this.modal).toBeVisible();
 
-    await expect(
-      this.modal.getByText("BID QTY", {
-        exact: true,
-      }),
-    ).toBeVisible();
+    const modalText = await this.modal.innerText();
 
-    await expect(
-      this.modal.getByText("ASK", {
-        exact: true,
-      }),
-    ).toBeVisible();
+    expect(modalText).toMatch(/BID\s+PRICE/i);
+    expect(modalText).toMatch(/BID\s+QTY/i);
+    expect(modalText).toMatch(/ASK\s+PRICE/i);
+    expect(modalText).toMatch(/ASK\s+QTY/i);
+    expect(modalText).toMatch(/SPLITS/i);
 
-    await expect(
-      this.modal.getByText("ASK QTY", {
-        exact: true,
-      }),
-    ).toBeVisible();
+    const bids = orderBook.data.bids;
+    const asks = orderBook.data.asks;
 
-    await expect(
-      this.modal
-        .getByText("SPLITS", {
-          exact: true,
-        })
-        .first(),
-    ).toBeVisible();
+    expect(bids).toBeDefined();
+    expect(asks).toBeDefined();
+
+    expect(bids.length).toBeGreaterThan(0);
+    expect(asks.length).toBeGreaterThan(0);
+
+    // Validate visible rows only
+    const visibleBidRows = Math.min(3, bids.length);
+    const visibleAskRows = Math.min(3, asks.length);
+
+    for (let i = 0; i < visibleBidRows; i++) {
+      const bid = bids[i];
+
+      const price = Number(bid.price).toFixed(2);
+      const quantity = Number(bid.quantity).toLocaleString("en-US");
+
+      expect(modalText).toContain(price);
+      expect(modalText).toContain(quantity);
+    }
+
+    for (let i = 0; i < visibleAskRows; i++) {
+      const ask = asks[i];
+
+      const price = Number(ask.price).toFixed(2);
+      const quantity = Number(ask.quantity).toLocaleString("en-US");
+
+      expect(modalText).toContain(price);
+      expect(modalText).toContain(quantity);
+    }
   }
-
   // ==========================================================
   // CLIENT
   // ==========================================================
