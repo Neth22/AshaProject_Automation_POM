@@ -183,24 +183,39 @@ export class SimulatorDashboardPage {
     await buyButton.click();
   }
 
-  async openSellForSecurity(symbol) {
-    const security = this.page
-      .getByText(symbol, {
-        exact: true,
-      })
-      .first();
+  async rightClickSecurity(security) {
+    await this.page
+      .getByRole("table")
+      .getByText(security, { exact: true })
+      .click({
+        button: "right",
+      });
+  }
 
-    await expect(security).toBeVisible();
+  async openBuyForSecurity(security) {
+    await this.rightClickSecurity(security);
 
-    await security.click({
-      button: "right",
+    const buyButton = this.page.getByRole("button", {
+      name: "Buy",
+      exact: true,
     });
 
-    await this.page
-      .getByText("Sell", {
-        exact: true,
-      })
-      .click();
+    await expect(buyButton).toBeVisible();
+
+    await buyButton.click();
+  }
+
+  async openSellForSecurity(symbol) {
+    await this.rightClickSecurity(symbol);
+
+    const sellButton = this.page.getByRole("button", {
+      name: "Sell",
+      exact: true,
+    });
+
+    await expect(sellButton).toBeVisible();
+
+    await sellButton.click();
   }
 
   async getSecurityRow(security) {
