@@ -188,235 +188,165 @@ test.describe("Simulator Sell Order Functional Tests", () => {
     expect(await sellOrder.getQuantity()).toBe("1");
   });
 
-   test(
-    "SELL_10: Should prevent submission when quantity is blank",
-    async ({ page }) => {
-      await openSellModal();
+  test("SELL_10: Should prevent submission when quantity is blank", async ({
+    page,
+  }) => {
+    await openSellModal();
 
-      await sellOrder.clearQuantity();
+    await sellOrder.clearQuantity();
 
-      await sellOrder.submitSellButton.click();
+    await sellOrder.submitSellButton.click();
 
-      await expect(
-        page.getByText(
-          "✗ Quantity is required.",
-          {
-            exact: true,
-          },
-        ),
-      ).toBeVisible();
-    },
-  );
+    await expect(
+      page.getByText("✗ Quantity is required.", {
+        exact: true,
+      }),
+    ).toBeVisible();
+  });
 
-  test(
-    "SELL_11: Should reject zero quantity",
-    async ({ page }) => {
-      await openSellModal();
+  test("SELL_11: Should reject zero quantity", async ({ page }) => {
+    await openSellModal();
 
-      await sellOrder.enterQuantity(0);
+    await sellOrder.enterQuantity(0);
 
-      await sellOrder.submitSellButton.click();
+    await sellOrder.submitSellButton.click();
 
-      await expect(
-        page.getByText(
-          "✗ Quantity must be a whole number greater than 0.",
-          {
-            exact: true,
-          },
-        ),
-      ).toBeVisible();
-    },
-  );
+    await expect(
+      page.getByText("✗ Quantity must be a whole number greater than 0.", {
+        exact: true,
+      }),
+    ).toBeVisible();
+  });
 
-  test(
-    "SELL_13: Should reject decimal quantity",
-    async ({ page }) => {
-      await openSellModal();
+  test("SELL_13: Should reject decimal quantity", async ({ page }) => {
+    await openSellModal();
 
-      await sellOrder.enterQuantity(10.5);
+    await sellOrder.enterQuantity(10.5);
 
-      await sellOrder.submitSellButton.click();
+    await sellOrder.submitSellButton.click();
 
-      await expect(
-        page.getByText(
-          "✗ Quantity must be a whole number greater than 0.",
-          {
-            exact: true,
-          },
-        ),
-      ).toBeVisible();
-    },
-  );
+    await expect(
+      page.getByText("✗ Quantity must be a whole number greater than 0.", {
+        exact: true,
+      }),
+    ).toBeVisible();
+  });
 
-   test(
-    "SELL_14: Should reject zero LIMIT price",
-    async ({ page }) => {
-      await openSellModal();
+  test("SELL_14: Should reject zero LIMIT price", async ({ page }) => {
+    await openSellModal();
 
-      await sellOrder.selectOrderType(
-        "Limit",
-      );
+    await sellOrder.selectOrderType("Limit");
 
-      await sellOrder.enterQuantity(1);
+    await sellOrder.enterQuantity(1);
 
-      await sellOrder.enterPrice(0);
+    await sellOrder.enterPrice(0);
 
-      await sellOrder.submitSellButton.click();
+    await sellOrder.submitSellButton.click();
 
-      await expect(
-        page.getByText(
-          "✗ Price must be greater than 0.",
-          {
-            exact: true,
-          },
-        ),
-      ).toBeVisible();
-    },
-  );
+    await expect(
+      page.getByText("✗ Price must be greater than 0.", {
+        exact: true,
+      }),
+    ).toBeVisible();
+  });
 
-  test(
-    "SELL_15: Should reject negative LIMIT price",
-    async ({ page }) => {
-      await openSellModal();
+  test("SELL_15: Should reject negative LIMIT price", async ({ page }) => {
+    await openSellModal();
 
-      await sellOrder.selectOrderType(
-        "Limit",
-      );
+    await sellOrder.selectOrderType("Limit");
 
-      await sellOrder.enterQuantity(1);
+    await sellOrder.enterQuantity(1);
 
-      await sellOrder.enterPrice(-10);
+    await sellOrder.enterPrice(-10);
 
-      await sellOrder.submitSellButton.click();
+    await sellOrder.submitSellButton.click();
 
-      await expect(
-        page.getByText(
-          "✗ Price must be greater than 0.",
-          {
-            exact: true,
-          },
-        ),
-      ).toBeVisible();
-    },
-  );
+    await expect(
+      page.getByText("✗ Price must be greater than 0.", {
+        exact: true,
+      }),
+    ).toBeVisible();
+  });
 
-   test(
-    "SELL_16: Should accept valid LIMIT price",
-    async ({ page }) => {
-      await openSellModal();
+  test("SELL_16: Should accept valid LIMIT price", async ({ page }) => {
+    await openSellModal();
 
-      await sellOrder.selectOrderType(
-        "Limit",
-      );
+    await sellOrder.selectOrderType("Limit");
 
-      const market =
-        await getMarketPrice(
-          page,
-          TEST_SYMBOL,
-          "Sell",
-          1,
-        );
+    const market = await getMarketPrice(page, TEST_SYMBOL, "Sell", 1);
 
-      expect(market.success).toBeTruthy();
+    expect(market.success).toBeTruthy();
 
-      const validPrice =
-        Number(
-          market.data.pricePerShare,
-        );
+    const validPrice = Number(market.data.pricePerShare);
 
-      expect(validPrice).toBeGreaterThan(0);
+    expect(validPrice).toBeGreaterThan(0);
 
-      await sellOrder.enterPrice(
-        validPrice,
-      );
+    await sellOrder.enterPrice(validPrice);
 
-      expect(
-        await sellOrder.getPriceNumber(),
-      ).toBeCloseTo(
-        validPrice,
-        2,
-      );
-    },
-  );
+    expect(await sellOrder.getPriceNumber()).toBeCloseTo(validPrice, 2);
+  });
 
-   test(
-    "SELL_17: Should update Order Value when quantity changes",
-    async ({ page }) => {
-      await openSellModal();
+  test("SELL_17: Should update Order Value when quantity changes", async ({
+    page,
+  }) => {
+    await openSellModal();
 
-      await sellOrder.selectOrderType(
-        "Market",
-      );
+    await sellOrder.selectOrderType("Market");
 
-      const market10 =
-        await getMarketPrice(
-          page,
-          TEST_SYMBOL,
-          "Sell",
-          10,
-        );
+    const market10 = await getMarketPrice(page, TEST_SYMBOL, "Sell", 10);
 
-      expect(market10.success).toBeTruthy();
+    expect(market10.success).toBeTruthy();
 
-      await sellOrder.enterQuantity(10);
+    await sellOrder.enterQuantity(10);
 
-      const expected10 =
-        Number(
-          market10.data.total,
-        );
+    const expected10 = Number(market10.data.total);
 
-      await expect
-        .poll(
-          async () =>
-            await sellOrder.getOrderValue(),
-        )
-        .toBeCloseTo(
-          expected10,
-          2,
-        );
+    await expect
+      .poll(async () => await sellOrder.getOrderValue())
+      .toBeCloseTo(expected10, 2);
 
-      const firstOrderValue =
-        await sellOrder.getOrderValue();
+    const firstOrderValue = await sellOrder.getOrderValue();
 
-      const market100 =
-        await getMarketPrice(
-          page,
-          TEST_SYMBOL,
-          "Sell",
-          100,
-        );
+    const market100 = await getMarketPrice(page, TEST_SYMBOL, "Sell", 100);
 
-      expect(market100.success).toBeTruthy();
+    expect(market100.success).toBeTruthy();
 
-      await sellOrder.enterQuantity(
-        100,
-      );
+    await sellOrder.enterQuantity(100);
 
-      const expected100 =
-        Number(
-          market100.data.total,
-        );
+    const expected100 = Number(market100.data.total);
 
-      await expect
-        .poll(
-          async () =>
-            await sellOrder.getOrderValue(),
-        )
-        .toBeCloseTo(
-          expected100,
-          2,
-        );
+    await expect
+      .poll(async () => await sellOrder.getOrderValue())
+      .toBeCloseTo(expected100, 2);
 
-      const secondOrderValue =
-        await sellOrder.getOrderValue();
+    const secondOrderValue = await sellOrder.getOrderValue();
 
-      expect(
-        secondOrderValue,
-      ).toBeGreaterThan(
-        firstOrderValue,
-      );
-    },
-  );
+    expect(secondOrderValue).toBeGreaterThan(firstOrderValue);
+  });
 
+  test("SELL_18: Should update Order Value when Limit Price changes", async () => {
+    await openSellModal();
 
+    await sellOrder.selectOrderType("Limit");
+
+    await sellOrder.enterQuantity(1);
+
+    await sellOrder.enterPrice(16);
+
+    await expect
+      .poll(async () => await sellOrder.getOrderValue())
+      .toBeGreaterThan(0);
+
+    const firstOrderValue = await sellOrder.getOrderValue();
+
+    await sellOrder.enterPrice(17);
+
+    await expect
+      .poll(async () => await sellOrder.getOrderValue())
+      .toBeGreaterThan(firstOrderValue);
+
+    const secondOrderValue = await sellOrder.getOrderValue();
+
+    expect(secondOrderValue).toBeGreaterThan(firstOrderValue);
+  });
 });
