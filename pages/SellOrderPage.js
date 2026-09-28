@@ -42,29 +42,25 @@ export class SimulatorSellOrderPage {
     // ========================================================
     // ACTION
     // ========================================================
+    this.buyActionButton = this.modal
+      .getByRole("button", {
+        name: "BUY",
+        exact: true,
+      })
+      .first();
 
-    this.buyActionButton = this.modal.getByText("BUY", {
-      exact: true,
-    });
-
-    this.sellActionButton = this.modal.getByText("SELL", {
-      exact: true,
-    });
+    this.sellActionButton = this.modal
+      .getByRole("button", {
+        name: "SELL",
+        exact: true,
+      })
+      .first();
 
     // ========================================================
     // ORDER TYPE
     // ========================================================
 
-    this.orderTypeControl = this.modal
-      .getByText("LIMIT", {
-        exact: true,
-      })
-      .or(
-        this.modal.getByText("MARKET", {
-          exact: true,
-        }),
-      )
-      .first();
+    this.orderTypeSelect = this.modal.locator("select").first();
 
     // ========================================================
     // CONFIRM
@@ -76,10 +72,12 @@ export class SimulatorSellOrderPage {
     // SUBMIT
     // ========================================================
 
-    this.submitSellButton = this.modal.getByRole("button", {
-      name: "SELL",
-      exact: true,
-    });
+    this.submitSellButton = this.modal
+      .getByRole("button", {
+        name: "SELL",
+        exact: true,
+      })
+      .last();
 
     this.closeSellButton = this.modal.getByRole("button", {
       name: "CLOSE",
@@ -236,33 +234,17 @@ export class SimulatorSellOrderPage {
   // ==========================================================
 
   async selectOrderType(orderType) {
-    const normalized = orderType.toUpperCase();
+    const value = orderType.toLowerCase() === "market" ? "Market" : "Limit";
 
-    const current = this.modal.getByText(normalized, {
-      exact: true,
-    });
-
-    await current.click();
-
-    const option = this.page
-      .getByText(normalized, {
-        exact: true,
-      })
-      .last();
-
-    if (await option.isVisible().catch(() => false)) {
-      await option.click();
-    }
+    await this.orderTypeSelect.selectOption(value);
   }
 
   async verifyOrderType(expected) {
-    await expect(
-      this.modal.getByText(expected.toUpperCase(), {
-        exact: true,
-      }),
-    ).toBeVisible();
-  }
+    const expectedValue =
+      expected.toLowerCase() === "market" ? "Market" : "Limit";
 
+    await expect(this.orderTypeSelect).toHaveValue(expectedValue);
+  }
   // ==========================================================
   // QUANTITY
   // ==========================================================
