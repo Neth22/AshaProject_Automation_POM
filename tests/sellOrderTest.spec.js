@@ -380,22 +380,43 @@ test.describe("Simulator Sell Order Functional Tests", () => {
     expect(netValue).toBeCloseTo(expectedNetValue, 2);
   });
 
-  test(
-    "SELL_20: Should prevent submission when Confirm is unchecked",
-    async () => {
-      await openSellModal();
+  test("SELL_20: Should prevent submission when Confirm is unchecked", async () => {
+    await openSellModal();
 
-      await sellOrder.enterQuantity(1);
+    await sellOrder.enterQuantity(1);
 
-      await sellOrder.uncheckConfirm();
+    await sellOrder.uncheckConfirm();
 
-      expect(
-        await sellOrder.isConfirmChecked(),
-      ).toBe(false);
+    expect(await sellOrder.isConfirmChecked()).toBe(false);
 
-      await expect(
-        sellOrder.submitSellButton,
-      ).toBeDisabled();
-    },
-  );
+    await expect(sellOrder.submitSellButton).toBeDisabled();
+  });
+
+  test("SELL_21: Should reject quantity greater than available holdings", async ({
+    page,
+  }) => {
+    await openSellModal();
+
+    const portfolio = await getPortfolio(page);
+
+    const holdingQuantity = getHoldingQuantity(portfolio, TEST_SYMBOL);
+
+    expect(holdingQuantity).not.toBeNull();
+
+    expect(holdingQuantity).toBeGreaterThan(0);
+
+    const invalidQuantity = Math.floor(holdingQuantity) + 1;
+
+    await sellOrder.selectOrderType("Market");
+
+    await sellOrder.enterQuantity(invalidQuantity);
+
+    await sellOrder.checkConfirm();
+
+    await sellOrder.submitSellButton.click();
+
+    await expect(
+      page.getByText("✗ Insufficient holdings for this sell order").first(),
+    ).toBeVisible();
+  });
 });
