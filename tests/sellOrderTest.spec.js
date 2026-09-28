@@ -484,4 +484,72 @@ test.describe("Simulator Sell Order Functional Tests", () => {
       }),
     ).toBeVisible();
   });
+
+  test("SELL_23: Should submit valid LIMIT Sell order", async ({ page }) => {
+    await openSellModal();
+
+    const portfolio = await getPortfolio(page);
+
+    const holdingQuantity = getHoldingQuantity(portfolio, TEST_SYMBOL);
+
+    expect(holdingQuantity).not.toBeNull();
+
+    expect(holdingQuantity).toBeGreaterThan(0);
+
+    const quantity = 1;
+
+    const market = await getMarketPrice(page, TEST_SYMBOL, "Sell", quantity);
+
+    expect(market.success).toBeTruthy();
+
+    const price = Number(market.data.pricePerShare);
+
+    expect(price).toBeGreaterThan(0);
+
+    await sellOrder.selectOrderType("Limit");
+
+    await sellOrder.enterQuantity(quantity);
+
+    await sellOrder.enterPrice(price);
+
+    await sellOrder.checkConfirm();
+
+    const orderResponsePromise = page.waitForResponse((response) =>
+      isApiResponse(response, ORDERS, "POST"),
+    );
+
+    await sellOrder.submitSell();
+
+    const response = await orderResponsePromise;
+
+    expect(response.ok()).toBeTruthy();
+
+    const requestBody = response.request().postDataJSON();
+
+    expect(requestBody.symbol).toBe(TEST_SYMBOL);
+
+    expect(requestBody.side).toBe("Sell");
+
+    expect(Number(requestBody.quantity)).toBe(quantity);
+
+    expect(requestBody.orderType).toBe("Limit");
+
+    expect(Number(requestBody.limitPrice)).toBeCloseTo(price, 2);
+
+    const body = await response.json();
+
+    expect(body.success).toBeTruthy();
+
+    expect(body.data).toBeDefined();
+
+    expect(body.data.side).toBe("Sell");
+
+    expect(Number(body.data.quantity)).toBe(quantity);
+
+    await expect(
+      page.getByText("✓ Order placed successfully!", {
+        exact: true,
+      }),
+    ).toBeVisible();
+  });
 });
