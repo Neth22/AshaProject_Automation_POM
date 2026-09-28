@@ -300,4 +300,43 @@ test.describe("Simulator Sell Order Functional Tests", () => {
     },
   );
 
+   test(
+    "SELL_16: Should accept valid LIMIT price",
+    async ({ page }) => {
+      await openSellModal();
+
+      await sellOrder.selectOrderType(
+        "Limit",
+      );
+
+      const market =
+        await getMarketPrice(
+          page,
+          TEST_SYMBOL,
+          "Sell",
+          1,
+        );
+
+      expect(market.success).toBeTruthy();
+
+      const validPrice =
+        Number(
+          market.data.pricePerShare,
+        );
+
+      expect(validPrice).toBeGreaterThan(0);
+
+      await sellOrder.enterPrice(
+        validPrice,
+      );
+
+      expect(
+        await sellOrder.getPriceNumber(),
+      ).toBeCloseTo(
+        validPrice,
+        2,
+      );
+    },
+  );
+
 });
