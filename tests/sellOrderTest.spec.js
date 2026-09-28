@@ -274,5 +274,30 @@ test.describe("Simulator Sell Order Functional Tests", () => {
     },
   );
 
-  
+  test(
+    "SELL_15: Should reject negative LIMIT price",
+    async ({ page }) => {
+      await openSellModal();
+
+      await sellOrder.selectOrderType(
+        "Limit",
+      );
+
+      await sellOrder.enterQuantity(1);
+
+      await sellOrder.enterPrice(-10);
+
+      await sellOrder.submitSellButton.click();
+
+      await expect(
+        page.getByText(
+          "✗ Price must be greater than 0.",
+          {
+            exact: true,
+          },
+        ),
+      ).toBeVisible();
+    },
+  );
+
 });
