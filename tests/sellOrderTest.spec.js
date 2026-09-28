@@ -379,4 +379,23 @@ test.describe("Simulator Sell Order Functional Tests", () => {
 
     expect(netValue).toBeCloseTo(expectedNetValue, 2);
   });
+
+  test(
+    "SELL_20: Should prevent submission when Confirm is unchecked",
+    async () => {
+      await openSellModal();
+
+      await sellOrder.enterQuantity(1);
+
+      await sellOrder.uncheckConfirm();
+
+      expect(
+        await sellOrder.isConfirmChecked(),
+      ).toBe(false);
+
+      await expect(
+        sellOrder.submitSellButton,
+      ).toBeDisabled();
+    },
+  );
 });
