@@ -552,4 +552,24 @@ test.describe("Simulator Sell Order Functional Tests", () => {
       }),
     ).toBeVisible();
   });
+
+  test(
+    "SELL_24: Should return valid Order Ticket data",
+    async ({ page }) => {
+      await openSellModal();
+
+      const ticket =
+        await getOrderTicket(
+          page,
+          TEST_SYMBOL,
+          "Sell",
+          "Limit",
+        );
+
+      expect(ticket.success).toBeTruthy();
+
+      expect(ticket.data).toBeDefined();
+    },
+  );
+  
 });
