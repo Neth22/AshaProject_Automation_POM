@@ -339,4 +339,84 @@ test.describe("Simulator Sell Order Functional Tests", () => {
     },
   );
 
+   test(
+    "SELL_17: Should update Order Value when quantity changes",
+    async ({ page }) => {
+      await openSellModal();
+
+      await sellOrder.selectOrderType(
+        "Market",
+      );
+
+      const market10 =
+        await getMarketPrice(
+          page,
+          TEST_SYMBOL,
+          "Sell",
+          10,
+        );
+
+      expect(market10.success).toBeTruthy();
+
+      await sellOrder.enterQuantity(10);
+
+      const expected10 =
+        Number(
+          market10.data.total,
+        );
+
+      await expect
+        .poll(
+          async () =>
+            await sellOrder.getOrderValue(),
+        )
+        .toBeCloseTo(
+          expected10,
+          2,
+        );
+
+      const firstOrderValue =
+        await sellOrder.getOrderValue();
+
+      const market100 =
+        await getMarketPrice(
+          page,
+          TEST_SYMBOL,
+          "Sell",
+          100,
+        );
+
+      expect(market100.success).toBeTruthy();
+
+      await sellOrder.enterQuantity(
+        100,
+      );
+
+      const expected100 =
+        Number(
+          market100.data.total,
+        );
+
+      await expect
+        .poll(
+          async () =>
+            await sellOrder.getOrderValue(),
+        )
+        .toBeCloseTo(
+          expected100,
+          2,
+        );
+
+      const secondOrderValue =
+        await sellOrder.getOrderValue();
+
+      expect(
+        secondOrderValue,
+      ).toBeGreaterThan(
+        firstOrderValue,
+      );
+    },
+  );
+
+
 });
