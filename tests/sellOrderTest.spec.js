@@ -147,4 +147,20 @@ test.describe("Simulator Sell Order Functional Tests", () => {
       ).not.toBeEditable();
     },
   );
+
+   test(
+    "SELL_07: LIMIT order should make Price editable",
+    async () => {
+      await openSellModal();
+
+      await sellOrder.selectOrderType(
+        "Limit",
+      );
+
+      await expect(
+        sellOrder.priceInput ??
+          sellOrder.inputs.nth(1),
+      ).toBeEditable();
+    },
+  );
 });
