@@ -187,4 +187,24 @@ test.describe("Simulator Sell Order Functional Tests", () => {
 
     expect(await sellOrder.getQuantity()).toBe("1");
   });
+
+   test(
+    "SELL_10: Should prevent submission when quantity is blank",
+    async ({ page }) => {
+      await openSellModal();
+
+      await sellOrder.clearQuantity();
+
+      await sellOrder.submitSellButton.click();
+
+      await expect(
+        page.getByText(
+          "✗ Quantity is required.",
+          {
+            exact: true,
+          },
+        ),
+      ).toBeVisible();
+    },
+  );
 });
