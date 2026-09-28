@@ -207,4 +207,24 @@ test.describe("Simulator Sell Order Functional Tests", () => {
       ).toBeVisible();
     },
   );
+
+  test(
+    "SELL_11: Should reject zero quantity",
+    async ({ page }) => {
+      await openSellModal();
+
+      await sellOrder.enterQuantity(0);
+
+      await sellOrder.submitSellButton.click();
+
+      await expect(
+        page.getByText(
+          "✗ Quantity must be a whole number greater than 0.",
+          {
+            exact: true,
+          },
+        ),
+      ).toBeVisible();
+    },
+  );
 });
