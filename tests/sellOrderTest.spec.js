@@ -131,4 +131,20 @@ test.describe("Simulator Sell Order Functional Tests", () => {
 
     expect(actualPrice).toBeCloseTo(expectedPrice, 2);
   });
+
+   test(
+    "SELL_06: MARKET order should make Price non-editable",
+    async () => {
+      await openSellModal();
+
+      await sellOrder.selectOrderType(
+        "Market",
+      );
+
+      await expect(
+        sellOrder.priceInput ??
+          sellOrder.inputs.nth(1),
+      ).not.toBeEditable();
+    },
+  );
 });
