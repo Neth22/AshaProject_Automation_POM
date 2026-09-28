@@ -227,4 +227,24 @@ test.describe("Simulator Sell Order Functional Tests", () => {
       ).toBeVisible();
     },
   );
+
+  test(
+    "SELL_13: Should reject decimal quantity",
+    async ({ page }) => {
+      await openSellModal();
+
+      await sellOrder.enterQuantity(10.5);
+
+      await sellOrder.submitSellButton.click();
+
+      await expect(
+        page.getByText(
+          "✗ Quantity must be a whole number greater than 0.",
+          {
+            exact: true,
+          },
+        ),
+      ).toBeVisible();
+    },
+  );
 });
