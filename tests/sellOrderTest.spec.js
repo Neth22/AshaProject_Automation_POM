@@ -349,4 +349,34 @@ test.describe("Simulator Sell Order Functional Tests", () => {
 
     expect(secondOrderValue).toBeGreaterThan(firstOrderValue);
   });
+
+  test("SELL_19: Should calculate Net Value correctly", async () => {
+    await openSellModal();
+
+    await sellOrder.selectOrderType("Market");
+
+    await sellOrder.enterQuantity(1);
+
+    await expect
+      .poll(async () => await sellOrder.getOrderValue())
+      .toBeGreaterThan(0);
+
+    await expect
+      .poll(async () => await sellOrder.getCommission())
+      .toBeGreaterThan(0);
+
+    const orderValue = await sellOrder.getOrderValue();
+
+    const commission = await sellOrder.getCommission();
+
+    const expectedNetValue = orderValue - commission;
+
+    await expect
+      .poll(async () => await sellOrder.getNetValue())
+      .toBeCloseTo(expectedNetValue, 2);
+
+    const netValue = await sellOrder.getNetValue();
+
+    expect(netValue).toBeCloseTo(expectedNetValue, 2);
+  });
 });
