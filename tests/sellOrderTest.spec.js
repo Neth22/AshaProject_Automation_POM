@@ -169,4 +169,22 @@ test.describe("Simulator Sell Order Functional Tests", () => {
       .poll(async () => await sellOrder.getPriceNumber())
       .toBeCloseTo(expectedPrice, 2);
   });
+
+  test("SELL_09: Should accept valid positive integer quantity", async ({
+    page,
+  }) => {
+    await openSellModal();
+
+    const portfolio = await getPortfolio(page);
+
+    const availableQuantity = getHoldingQuantity(portfolio, TEST_SYMBOL);
+
+    expect(availableQuantity).not.toBeNull();
+
+    expect(availableQuantity).toBeGreaterThan(0);
+
+    await sellOrder.enterQuantity(1);
+
+    expect(await sellOrder.getQuantity()).toBe("1");
+  });
 });
