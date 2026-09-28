@@ -132,35 +132,41 @@ test.describe("Simulator Sell Order Functional Tests", () => {
     expect(actualPrice).toBeCloseTo(expectedPrice, 2);
   });
 
-   test(
-    "SELL_06: MARKET order should make Price non-editable",
-    async () => {
-      await openSellModal();
+  test("SELL_06: MARKET order should make Price non-editable", async () => {
+    await openSellModal();
 
-      await sellOrder.selectOrderType(
-        "Market",
-      );
+    await sellOrder.selectOrderType("Market");
 
-      await expect(
-        sellOrder.priceInput ??
-          sellOrder.inputs.nth(1),
-      ).not.toBeEditable();
-    },
-  );
+    await expect(
+      sellOrder.priceInput ?? sellOrder.inputs.nth(1),
+    ).not.toBeEditable();
+  });
 
-   test(
-    "SELL_07: LIMIT order should make Price editable",
-    async () => {
-      await openSellModal();
+  test("SELL_07: LIMIT order should make Price editable", async () => {
+    await openSellModal();
 
-      await sellOrder.selectOrderType(
-        "Limit",
-      );
+    await sellOrder.selectOrderType("Limit");
 
-      await expect(
-        sellOrder.priceInput ??
-          sellOrder.inputs.nth(1),
-      ).toBeEditable();
-    },
-  );
+    await expect(
+      sellOrder.priceInput ?? sellOrder.inputs.nth(1),
+    ).toBeEditable();
+  });
+
+  test("SELL_08: LIMIT order should display current Sell market price", async ({
+    page,
+  }) => {
+    await openSellModal();
+
+    await sellOrder.selectOrderType("Limit");
+
+    const market = await getMarketPrice(page, TEST_SYMBOL, "Sell", 1);
+
+    expect(market.success).toBeTruthy();
+
+    const expectedPrice = Number(market.data.pricePerShare);
+
+    await expect
+      .poll(async () => await sellOrder.getPriceNumber())
+      .toBeCloseTo(expectedPrice, 2);
+  });
 });
