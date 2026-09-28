@@ -247,4 +247,32 @@ test.describe("Simulator Sell Order Functional Tests", () => {
       ).toBeVisible();
     },
   );
+
+   test(
+    "SELL_14: Should reject zero LIMIT price",
+    async ({ page }) => {
+      await openSellModal();
+
+      await sellOrder.selectOrderType(
+        "Limit",
+      );
+
+      await sellOrder.enterQuantity(1);
+
+      await sellOrder.enterPrice(0);
+
+      await sellOrder.submitSellButton.click();
+
+      await expect(
+        page.getByText(
+          "✗ Price must be greater than 0.",
+          {
+            exact: true,
+          },
+        ),
+      ).toBeVisible();
+    },
+  );
+
+  
 });
